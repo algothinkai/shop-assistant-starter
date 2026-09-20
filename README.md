@@ -101,3 +101,9 @@ The Stage 4 hooks extension has separate start/reference branches and an optiona
 Agent SDK environment. See [the hook checkpoints](stages/04-agent-hooks.md).
 `scripts/verify-hooks` is separate from the passing baseline/workflow checks.
 No SDK/model call occurs unless the learner deliberately selects `--live`.
+
+This is the **Stage 4 hooks reference branch**. The two callbacks are implemented;
+`scripts/verify-hooks` passes the same checks provided on its separate start.
+All recorded runs are offline. An actual model-driven hook round trip remains
+UNVERIFIED until the explicit local live experiment observes both callbacks and a
+successful terminal result.
