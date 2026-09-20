@@ -1,0 +1,318 @@
+{
+  "kind": "AUTHORED_FICTIONAL_CAPSTONE",
+  "guide_version": "v1.0",
+  "cases": [
+    {
+      "id": "C1",
+      "title": "Damaged grinder: identity and policy conflict",
+      "family": "customer_support",
+      "objective_refs": [
+        "1.1",
+        "1.4",
+        "1.5",
+        "2.1",
+        "2.2",
+        "2.3",
+        "5.1",
+        "5.2"
+      ],
+      "situation": "A customer requests an immediate refund for a damaged grinder and asks for a person. A read-only order lookup succeeded but returned no match for the supplied order ID. The latest policy is dated after the order; the older policy version must be checked for applicability. Local identity state is unverified. A scripted tool loop has a tool_use for lookup and has not yet received a matching tool_result.",
+      "evidence": {
+        "order_lookup": "completed/no_match; identifier uncertain",
+        "identity": "local_simulated_unverified",
+        "policy": "current=2026-07-01; order=2026-06-16; prior=2026-05-01",
+        "tool_loop": "tool_use id=lookup-4; tool_result absent",
+        "customer_request": "explicit human"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": "Issue refund using the newest policy and claim the request is resolved."
+        },
+        {
+          "id": "B",
+          "text": "Complete the read-only tool protocol, clarify ID, preserve identity/policy guards and hand off to a person."
+        },
+        {
+          "id": "C",
+          "text": "Retry the successful no-match lookup indefinitely with the same ID."
+        }
+      ],
+      "transfer": "The corrected order ID matches, identity is verified, but an exception remains outside policy. Decide whether refund may now be automatic.",
+      "transfer_choices": [
+        {
+          "id": "A",
+          "text": "Yes, because identity and lookup are now clear."
+        },
+        {
+          "id": "B",
+          "text": "No; keep the policy exception in a structured human handoff."
+        }
+      ],
+      "required_evidence": [
+        "order_lookup",
+        "identity",
+        "policy",
+        "tool_loop",
+        "customer_request"
+      ]
+    },
+    {
+      "id": "C2",
+      "title": "Receipt batch: uncertain extraction and duplicate result",
+      "family": "structured_extraction",
+      "objective_refs": [
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "5.5"
+      ],
+      "situation": "Two fictional receipts enter a night batch. One text line gives a total but no tax; the schema permits null tax. An output returns a syntactically valid total that disagrees with the text. Another custom_id occurs twice, and one provider result is absent. A high-confidence field is still semantically wrong. Decide sample, correlation and review before another batch.",
+      "evidence": {
+        "receipt": "text total=129.00; tax missing",
+        "candidate": "JSON total=192.00, tax=null; confidence=.97",
+        "results": "custom_id r-1 twice; r-2 missing",
+        "batch_state": "ended, not accepted",
+        "source_kind": "text receipt"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": "Accept the schema-valid output and infer the missing result from its neighbor."
+        },
+        {
+          "id": "B",
+          "text": "Validate meaning against text, quarantine duplicate/missing IDs, fix a small sample and route unresolved fields to a person."
+        },
+        {
+          "id": "C",
+          "text": "Set all nullable fields to zero and retry the whole batch automatically."
+        }
+      ],
+      "transfer": "A later image attachment replaces the text receipt, while the current pipeline only supports text. Choose the boundary.",
+      "transfer_choices": [
+        {
+          "id": "A",
+          "text": "Pretend OCR happened because the JSON schema is the same."
+        },
+        {
+          "id": "B",
+          "text": "Require a separate image extraction path or human transcription; mark this run unsupported."
+        }
+      ],
+      "required_evidence": [
+        "receipt",
+        "candidate",
+        "results",
+        "batch_state",
+        "source_kind"
+      ]
+    },
+    {
+      "id": "C3",
+      "title": "Policy research: dated conflict and partial delegate failure",
+      "family": "multi_agent_research",
+      "objective_refs": [
+        "1.2",
+        "1.3",
+        "1.6",
+        "5.3",
+        "5.6"
+      ],
+      "situation": "A coordinator investigates a warranty claim. One delegate finds a dated policy that applies to the order; another finds a newer FAQ that disagrees but may target only future orders. The shipping delegate times out. The coordinator has not received its promised result. A source gap is discovered after the first two reports.",
+      "evidence": {
+        "policy": "version 2026-04-01 applies to purchase 2026-05-10",
+        "faq": "updated 2026-08-01; applicability not stated",
+        "shipping_delegate": "timeout/no result",
+        "gap": "effective-date scope unresolved",
+        "customer": "requests same-day answer"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": "State a complete answer based on the newest FAQ and omit the failed delegate."
+        },
+        {
+          "id": "B",
+          "text": "Preserve sources, dates and partial failure; delegate the new gap with explicit context, then hand off if uncertainty remains."
+        },
+        {
+          "id": "C",
+          "text": "Repeat all delegates in parallel without a scoped question or source dates."
+        }
+      ],
+      "transfer": "A valid dated policy now resolves applicability, but the shipping investigation still failed. Can the whole answer be marked complete?",
+      "transfer_choices": [
+        {
+          "id": "A",
+          "text": "No; communicate supported policy finding and the remaining shipping gap separately."
+        },
+        {
+          "id": "B",
+          "text": "Yes; one resolved issue makes the entire response complete."
+        }
+      ],
+      "required_evidence": [
+        "policy",
+        "faq",
+        "shipping_delegate",
+        "gap",
+        "customer"
+      ]
+    },
+    {
+      "id": "C4",
+      "title": "Developer recovery: changed rule and stale session",
+      "family": "developer_productivity",
+      "objective_refs": [
+        "1.7",
+        "2.4",
+        "2.5",
+        "3.4",
+        "5.4"
+      ],
+      "situation": "A developer resumes a long Claude Code session after another checkout changed the refund module. The scratchpad records an old line number. A personal MCP server has a tool name that overlaps a project server. The intended change is narrow and safety critical. First locate actual code and tests; do not trust the old summary as current source.",
+      "evidence": {
+        "old_note": "refund guard near line 48, saved before checkout",
+        "current_checkout": "refund guard moved; uncommitted work exists",
+        "mcp": "personal/project tool collision",
+        "tests": "identity-revocation regression exists",
+        "request": "safety-critical narrow change"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": "Edit line 48 immediately, use whichever tool appears first and continue the stale session."
+        },
+        {
+          "id": "B",
+          "text": "Inspect current source/tests and MCP scope; isolate exploration, plan a focused edit and verify with examples."
+        },
+        {
+          "id": "C",
+          "text": "Delete the existing tests so the resumed session passes quickly."
+        }
+      ],
+      "transfer": "A second task is open-ended exploration unrelated to the safety patch. Choose session handling.",
+      "transfer_choices": [
+        {
+          "id": "A",
+          "text": "Use a separate exploratory session or fork and retain the current patch facts."
+        },
+        {
+          "id": "B",
+          "text": "Mix its unverified conclusions into the current patch summary."
+        }
+      ],
+      "required_evidence": [
+        "old_note",
+        "current_checkout",
+        "mcp",
+        "tests",
+        "request"
+      ]
+    },
+    {
+      "id": "C5",
+      "title": "Independent review: CI partial failure and prior issue",
+      "family": "claude_code_ci",
+      "objective_refs": [
+        "3.6",
+        "4.1",
+        "4.6"
+      ],
+      "situation": "A local review pass finds a refund unit mismatch. The integration pass emits a valid-looking findings JSON file, but the host turn failed. A previous issue is absent from the new report. The comments category has repeated false alarms; one reported confidence is .99. CI is read-only and has no model credentials.",
+      "evidence": {
+        "local_pass": "complete; refund unit issue at refund.py:2",
+        "integration_pass": "process exit 0; terminal failed; final JSON present",
+        "prior": "issue not_reobserved; no proof of fix",
+        "noise": "comments high FP on small authored sample",
+        "ci": "offline fixture-only; no model key"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": "Publish the JSON as an empty successful review and close the prior issue."
+        },
+        {
+          "id": "B",
+          "text": "Keep integration incomplete, retain the prior issue as unverified, use explicit criteria and quarantine noisy reports for human review."
+        },
+        {
+          "id": "C",
+          "text": "Filter all findings below confidence .99 and call remaining reports correct."
+        }
+      ],
+      "transfer": "A future trusted workflow gets a model key. What is still needed before claiming an independent PR review?",
+      "transfer_choices": [
+        {
+          "id": "A",
+          "text": "Observed fresh host invocation, terminal success, source-bound findings, actual test context and appropriate authorization."
+        },
+        {
+          "id": "B",
+          "text": "Only a successful local parser unit test."
+        }
+      ],
+      "required_evidence": [
+        "local_pass",
+        "integration_pass",
+        "prior",
+        "noise",
+        "ci"
+      ]
+    },
+    {
+      "id": "C6",
+      "title": "Claude Code work rules in a changed shop project",
+      "family": "claude_code_generation",
+      "objective_refs": [
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.5"
+      ],
+      "situation": "The shop adds a new warranty script while the existing project has a shared CLAUDE.md, a path rule for receipts, and a reusable skill for policy source checks. A generated patch changes refund behavior. A unit test covers zero dollars only. The current request concerns warranty policy, not receipt extraction.",
+      "evidence": {
+        "project_rule": "CLAUDE.md lists test standards and fixture conventions",
+        "path_rule": "receipts/** only; not warranty/**",
+        "skill": "policy source check, repeatable",
+        "patch": "refund amount conversion changed",
+        "test": "zero-only test does not expose nonzero unit bug"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": "Apply the receipt path rule to all files, accept the zero-only test and skip source search."
+        },
+        {
+          "id": "B",
+          "text": "Use shared project rules and the relevant skill, keep scoped rules scoped, inspect source and add a nonzero example before trusting the patch."
+        },
+        {
+          "id": "C",
+          "text": "Overwrite personal instructions and use one generic prompt for every file."
+        }
+      ],
+      "transfer": "The same one-off patch request will never repeat. Choose a reusable skill or direct focused instruction.",
+      "transfer_choices": [
+        {
+          "id": "A",
+          "text": "Direct focused instruction and test; avoid creating a new reusable skill without recurrence."
+        },
+        {
+          "id": "B",
+          "text": "Create a global skill that overrides all project rules."
+        }
+      ],
+      "required_evidence": [
+        "project_rule",
+        "path_rule",
+        "skill",
+        "patch",
+        "test"
+      ]
+    }
+  ]
+}

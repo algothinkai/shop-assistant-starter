@@ -162,3 +162,11 @@ validation, bounded correction and explicit failure states. Compact order enrich
 runs only after its full supported-source check; arithmetic results do not invent
 an order ID. The default demo records real local read events but authored model
 responses. Actual model compatibility remains UNVERIFIED.
+
+## Stage 10 capstone (separate teaching refs)
+
+The original six-case combined-fault exercise is in `stages/10-capstone.md` on
+`codex/stage-10-capstone-start` and its separate reference. Work in a learner
+checkout; `scripts/verify-capstone` is an explicit unfinished exercise check at
+the start. It validates response structure/evidence keys in the reference, not
+model behavior, correctness of the learner's reasoning or certification mastery.
