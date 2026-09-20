@@ -117,3 +117,7 @@ This is the **Stage 5 reference branch**. The narrow receipt validator is
 implemented and passes the same checks as the learning start. Complete source
 lines, unresolved source values and bounded correction are checked; this is not
 model extraction, arithmetic reconciliation or calibrated automation.
+
+Stage 5 evaluation has a separate [start/reference exercise](stages/05-evaluation.md).
+Run scripts/verify-extraction-eval only when attempting that checkpoint. Its authored
+predictions teach metrics/calibration mechanics; they do not measure a live model.
