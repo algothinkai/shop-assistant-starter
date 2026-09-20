@@ -125,3 +125,7 @@ predictions teach metrics/calibration mechanics; they do not measure a live mode
 This is the **Stage 5 evaluation reference**. Its dedicated evaluation checks pass;
 attempt codex/stage-5-evaluation-start before comparing the implementation. Calibration
 and held-out data remain tiny authored examples, not evidence for deployment.
+
+Stage 5 Messages extraction has separate [start/reference instructions](stages/05-messages.md).
+The default demo uses an authored response. Only explicit --live sends a potentially
+billable request using learner-local credentials; compatibility is not yet live-verified.
