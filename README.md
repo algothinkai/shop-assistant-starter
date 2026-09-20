@@ -143,3 +143,7 @@ This is the **Stage 5 formats reference**. Three authored examples and the separ
 transfer case exercise labeled/inline evidence checks. Compare with the separate
 formats start after attempting the checkpoint. Live few-shot effectiveness remains
 UNVERIFIED; deterministic tests establish validation behavior only.
+
+Stage 5 [reconciliation practice](stages/05-reconciliation.md) separates stated and
+calculated amounts and preserves other/unclear categories. Its dedicated exercise
+is separate from passing baseline tests and makes no model or payment calls.
