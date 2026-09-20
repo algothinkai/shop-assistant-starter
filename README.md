@@ -152,3 +152,7 @@ This is the **Stage 5 reconciliation reference**. The stated/calculated fields a
 category behavior pass the same dedicated checks as the learner start. Missing
 inputs remain review issues; known subtotal conflicts stay visible independently.
 Reconciled means this fictional arithmetic contract matched, never refund approval.
+
+Stage 5 [schema-selection orchestration](stages/05-orchestration.md) joins source
+validation to read-only enrichment. Default model responses remain authored; actual
+local get_order events are distinguished from unverified live model behavior.
