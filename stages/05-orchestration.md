@@ -21,11 +21,16 @@ tool, not necessarily the correct schema; validation still gates the next step.
 The provided assessor rejects compact-schema selection when explicit itemized
 charges are present, so choosing fewer fields cannot hide arithmetic conflicts.
 This conservative schema-mismatch case needs review, not automatic lookup.
+Unknown compact-source lines also require review: only the documented field lines,
+known fictional header/footer, Receipt ID and simple unpriced Item metadata are
+allowed. A new charge or malformed label cannot disappear because it was unmodeled.
 
 ## Practice
 
 Reuse the format prompt and add a separate reconcile_receipt schema/description.
-Distinguish which examples apply to which schema. Request only the named tool when
+Scope the entire inherited compact layout/evidence instructions and examples to
+extract_receipt only. reconcile_receipt has no evidence fields and follows its
+own arithmetic/category schema. Request only the named tool when
 known; offer both with any when unknown. Keep disable_parallel_tool_use true.
 Use the completed parse/assess helpers to validate protocol and source facts.
 

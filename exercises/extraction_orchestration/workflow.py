@@ -1,5 +1,6 @@
 """Implement schema selection and validation-gated read-only enrichment."""
 from copy import deepcopy
+import re
 from ..extraction_formats.adapter import build_request as build_receipt_request, validate
 from ..extraction_messages.adapter import ExtractionFailure, read_candidate
 from ..extraction_reconciliation.schema import SCHEMA as RECONCILIATION_SCHEMA
@@ -29,12 +30,25 @@ def assess(name, source, candidate):
                    for line in source.splitlines())
     if name == "extract_receipt" and itemized:
         return "needs_human_review", ["schema_does_not_cover_arithmetic_source"]
+    if name == "extract_receipt":
+        metadata = {"HARBOR & BEAN — FICTIONAL TRAINING RECEIPT", "This receipt is sample text. No purchase occurred."}
+        for raw in source.splitlines():
+            line = raw.strip()
+            if not line or line in metadata:
+                continue
+            if line.startswith(("Order:", "Date:", "Total:", "Customer:", "Receipt |")):
+                continue  # The completed format validator checks these values/rows.
+            if re.fullmatch(r"Receipt: R-[0-9]{4}", line):
+                continue
+            if re.fullmatch(r"Item: [^@]+ x[1-9][0-9]*", line) and not re.search(r"\b[A-Z]{3}\s+[0-9]", line):
+                continue
+            return "needs_human_review", ["unsupported_compact_source_line"]
     if name == "reconcile_receipt":
         result = validate_candidate(source, candidate)
-        return result["status"], result["candidate_errors"]
+        return result["status"], result["source_report"]["issues"] if result["status"] == "needs_human_review" else result["candidate_errors"]
     report = validate(source, candidate)
     if report["missing_fields"] or any(e["kind"] in ("source_unresolved", "source_conflict") for e in report["errors"]):
-        return "needs_human_review", report["errors"]
+        return "needs_human_review", report["errors"] + ["missing:" + field for field in report["missing_fields"]]
     return ("candidate_errors" if report["errors"] else "validated_candidate"), report["errors"]
 
 

@@ -118,3 +118,16 @@ class OrchestrationChecks(unittest.TestCase):
         r = run(source, "test", Mock(return_value=response(candidate=candidate)), mode="authored_fixture_no_model", enrich=enrich)
         self.assertEqual(r["status"], "needs_human_review")
         enrich.assert_not_called()
+
+    def test_unrecognized_or_malformed_charge_lines_cannot_enrich(self):
+        for line in ("Handling: USD 1.00", "Tax : USD 3.80", "Mystery surcharge 1.00", "Item: shipping USD 1.00 x1"):
+            enrich = Mock(return_value={"id": "O-1003"})
+            r = run(SOURCE + line + "\n", "test", Mock(return_value=response()), mode="authored_fixture_no_model", enrich=enrich)
+            self.assertEqual(r["status"], "needs_human_review", line)
+            enrich.assert_not_called()
+
+    def test_each_schema_has_scoped_instructions(self):
+        payload = build_request("test", request())
+        self.assertIn("<compact_receipt_only>", payload["system"])
+        self.assertIn("</compact_receipt_only>", payload["system"])
+        self.assertIn("no evidence fields", payload["system"])
