@@ -1,0 +1,230 @@
+{
+  "mode": "AUTHORED_PREDICTIONS_NO_MODEL",
+  "label_version": "draft-1",
+  "rows": [
+    {
+      "id": "C-1",
+      "split": "calibration",
+      "document_type": "labeled",
+      "source": "Order: O-2001\nDate: 2026-09-01\nCustomer: Ari Finch\nTotal: USD 18.00\n",
+      "gold": {
+        "order_id": "O-2001",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 1800,
+        "customer_name": "Ari Finch"
+      },
+      "predicted": {
+        "order_id": "O-2001",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 1800,
+        "customer_name": "Ari Finch"
+      },
+      "confidence": {
+        "order_id": 0.96,
+        "purchase_date": 0.96,
+        "currency": 0.96,
+        "total_cents": 0.96,
+        "customer_name": 0.96
+      },
+      "source_issue": null
+    },
+    {
+      "id": "C-2",
+      "split": "calibration",
+      "document_type": "labeled",
+      "source": "Order: O-2002\nDate: 2026-09-01\nCustomer: Bea Moss\nTotal: USD 32.00\n",
+      "gold": {
+        "order_id": "O-2002",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 3200,
+        "customer_name": "Bea Moss"
+      },
+      "predicted": {
+        "order_id": "O-2002",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 3200,
+        "customer_name": "Bea Moss"
+      },
+      "confidence": {
+        "order_id": 0.82,
+        "purchase_date": 0.82,
+        "currency": 0.82,
+        "total_cents": 0.82,
+        "customer_name": 0.82
+      },
+      "source_issue": null
+    },
+    {
+      "id": "C-3",
+      "split": "calibration",
+      "document_type": "inline",
+      "source": "2026-09-01 | O-2003 | Cy Vale | USD 48.00\n",
+      "gold": {
+        "order_id": "O-2003",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 4800,
+        "customer_name": "Cy Vale"
+      },
+      "predicted": {
+        "order_id": "O-2003",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 48,
+        "customer_name": "Cy Vale"
+      },
+      "confidence": {
+        "order_id": 0.98,
+        "purchase_date": 0.98,
+        "currency": 0.98,
+        "total_cents": 0.98,
+        "customer_name": 0.98
+      },
+      "source_issue": null
+    },
+    {
+      "id": "C-4",
+      "split": "calibration",
+      "document_type": "inline",
+      "source": "2026-09-01 | O-2004 | Dee North | USD 65.00\n",
+      "gold": {
+        "order_id": "O-2004",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 6500,
+        "customer_name": "Dee North"
+      },
+      "predicted": {
+        "order_id": "O-2004",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 65,
+        "customer_name": "Dee North"
+      },
+      "confidence": {
+        "order_id": 0.93,
+        "purchase_date": 0.93,
+        "currency": 0.93,
+        "total_cents": 0.93,
+        "customer_name": 0.93
+      },
+      "source_issue": null
+    },
+    {
+      "id": "E-1",
+      "split": "evaluation",
+      "document_type": "labeled",
+      "source": "Order: O-2011\nDate: 2026-09-01\nCustomer: Ari Finch\nTotal: USD 18.00\n",
+      "gold": {
+        "order_id": "O-2011",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 1800,
+        "customer_name": "Ari Finch"
+      },
+      "predicted": {
+        "order_id": "O-2011",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 1800,
+        "customer_name": "Ari"
+      },
+      "confidence": {
+        "order_id": 0.96,
+        "purchase_date": 0.96,
+        "currency": 0.96,
+        "total_cents": 0.96,
+        "customer_name": 0.96
+      },
+      "source_issue": null
+    },
+    {
+      "id": "E-2",
+      "split": "evaluation",
+      "document_type": "labeled",
+      "source": "Order: O-2012\nDate: 2026-09-01\nCustomer: Bea Moss\nTotal: USD 32.00\n",
+      "gold": {
+        "order_id": "O-2012",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 3200,
+        "customer_name": "Bea Moss"
+      },
+      "predicted": {
+        "order_id": "O-2012",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 3200,
+        "customer_name": "Bea Moss"
+      },
+      "confidence": {
+        "order_id": 0.82,
+        "purchase_date": 0.82,
+        "currency": 0.82,
+        "total_cents": 0.82,
+        "customer_name": 0.82
+      },
+      "source_issue": null
+    },
+    {
+      "id": "E-3",
+      "split": "evaluation",
+      "document_type": "inline",
+      "source": "2026-09-01 | O-2013 | Cy Vale | USD 48.00\n",
+      "gold": {
+        "order_id": "O-2013",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 4800,
+        "customer_name": "Cy Vale"
+      },
+      "predicted": {
+        "order_id": "O-2013",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 48,
+        "customer_name": "Cy Vale"
+      },
+      "confidence": {
+        "order_id": 0.98,
+        "purchase_date": 0.98,
+        "currency": 0.98,
+        "total_cents": 0.98,
+        "customer_name": 0.98
+      },
+      "source_issue": null
+    },
+    {
+      "id": "E-4",
+      "split": "evaluation",
+      "document_type": "inline",
+      "source": "2026-09-01 | O-2014 | Dee North | USD 65.00\n",
+      "gold": {
+        "order_id": "O-2014",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 6500,
+        "customer_name": "Dee North"
+      },
+      "predicted": {
+        "order_id": "O-2014",
+        "purchase_date": "2026-09-01",
+        "currency": "USD",
+        "total_cents": 65,
+        "customer_name": "Dee North"
+      },
+      "confidence": {
+        "order_id": 0.93,
+        "purchase_date": 0.93,
+        "currency": 0.93,
+        "total_cents": 0.93,
+        "customer_name": 0.93
+      },
+      "source_issue": null
+    }
+  ]
+}
