@@ -5,6 +5,7 @@ import json
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 from exercises.code_review.fixtures import FILES, ISSUE
 from exercises.code_review.workflow import ReviewFailure
 from .adapter import command, context, decode, execute, run_pass
@@ -154,6 +155,21 @@ class HostChecks(unittest.TestCase):
                     d,
                     timeout=3,
                 )
+
+    def test_timeout_preserves_simultaneous_cleanup_uncertainty(self):
+        with TemporaryDirectory() as d:
+            with patch(
+                "exercises.review_host.adapter.os.killpg", side_effect=PermissionError
+            ):
+                with self.assertRaisesRegex(
+                    ReviewFailure, "review_timeout;process_group_cleanup_unverified"
+                ):
+                    execute(
+                        [sys.executable, "-c", "import time; time.sleep(10)"],
+                        "",
+                        d,
+                        timeout=0.1,
+                    )
 
     def test_duplicate_json_key_and_unexpected_fields_rejected(self):
         with self.assertRaises(ReviewFailure):

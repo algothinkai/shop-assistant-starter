@@ -123,7 +123,9 @@ def execute(args, prompt, directory, *, timeout=120, environment=None):
             except ProcessLookupError:
                 pass
             except PermissionError:
-                reason = reason or "process_group_cleanup_unverified"
+                reason = (
+                    (reason + ";") if reason else ""
+                ) + "process_group_cleanup_unverified"
                 if p.poll() is None:
                     try:
                         p.kill()
