@@ -1,0 +1,5 @@
+[
+  {"id":"P-POUR","name":"Ceramic Pour-Over Set","price_cents":4200,"warranty_months":12},
+  {"id":"P-GRIND","name":"Burr Grinder","price_cents":12900,"warranty_months":24},
+  {"id":"P-KETTLE","name":"Stainless Kettle","price_cents":7600,"warranty_months":12}
+]

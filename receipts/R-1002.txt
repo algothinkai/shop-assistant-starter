@@ -1,0 +1,8 @@
+HARBOR & BEAN — FICTIONAL TRAINING RECEIPT
+Receipt: R-1002
+Order: O-1002
+Date: 2026-08-14
+Item: Burr Grinder x1
+Total: USD 129.00
+Customer: Eli Moreno
+This receipt is sample text. No purchase occurred.

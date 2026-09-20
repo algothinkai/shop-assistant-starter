@@ -1,0 +1,7 @@
+[
+  {"id":"POL-SHIP-2026-06","topic":"shipping","effective_on":"2026-06-01","supersedes":null,"text":"Use the order record for status. If tracking is absent or conflicting, ask for clarification or hand off; do not invent delivery dates."},
+  {"id":"POL-DAMAGE-2026-06","topic":"damage","effective_on":"2026-06-01","supersedes":null,"text":"Record the reported damage and receipt evidence. Do not promise a refund before identity and policy checks; unresolved exceptions go to a human."},
+  {"id":"POL-RETURN-2026-06","topic":"returns","effective_on":"2026-06-01","supersedes":null,"text":"Training baseline: returns within 30 days of delivery require explicit simulated identity verification. Refunds write only the local teaching ledger."},
+  {"id":"POL-RETURN-2026-09","topic":"returns","effective_on":"2026-09-01","supersedes":"POL-RETURN-2026-06","text":"Training policy: returns within 45 days of delivery require explicit simulated identity verification. Refunds write only the local teaching ledger. Escalate exceptions."},
+  {"id":"POL-WARRANTY-2026-06","topic":"warranty","effective_on":"2026-06-01","supersedes":null,"text":"Check the product warranty term and receipt date. Missing or conflicting evidence needs a human decision; do not invent coverage."}
+]

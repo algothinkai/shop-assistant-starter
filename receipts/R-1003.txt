@@ -1,0 +1,8 @@
+HARBOR & BEAN — FICTIONAL TRAINING RECEIPT
+Receipt: R-1003
+Order: O-1003
+Date: 2026-08-28
+Item: Stainless Kettle x1
+Total: USD 76.00
+Customer: Noor Patel
+This receipt is sample text. No purchase occurred.
