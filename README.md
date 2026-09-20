@@ -82,3 +82,8 @@ Stage 3 adds an optional pinned MCP environment and two real local stdio servers
 Read [the MCP checkpoints](stages/03-mcp.md) before running `scripts/setup-mcp` and
 `scripts/verify-stage 3`. The start dispatcher intentionally returns NOT_READY;
 the baseline remains green. Live Claude Code/model behavior is separately unverified.
+
+This is the **Stage 3 reference branch**. Attempt `codex/stage-3-start` first.
+The scoped dispatcher is implemented here; `scripts/verify-stage 3` uses the same
+checks as the start. Local protocol success does not validate a Claude model or
+host connection, and does not approve the draft curriculum for publication.
