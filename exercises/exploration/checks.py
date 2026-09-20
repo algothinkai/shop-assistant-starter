@@ -78,3 +78,14 @@ class ExplorationChecks(unittest.TestCase):
         index=manifest(self.entries);index["version"]=2
         with self.assertRaises(ValueError):recover(self.root,self.out,index)
         with self.assertRaises(ValueError):next_prompt({},"Continue")
+
+    def test_definition_looking_text_inside_string_is_not_code_evidence(self):
+        path=self.root/TASKS["refund-code"]
+        path.write_text("DOC = "+repr("\ndef refund_fake():\n")+"\n")
+        # A real multiline string contains a definition-looking line but no AST function.
+        path.write_text("DOC = "+chr(39)*3+"\ndef refund_fake():\n"+chr(39)*3+"\n")
+        value=scan(self.root,"refund-code")
+        value["findings"]=[{"symbol":"refund_fake","line":2,"quote":"def refund_fake():"}]
+        entry=export(self.out,value)
+        state=recover(self.root,self.out,manifest({**self.entries,"refund-code":entry}))
+        self.assertEqual(state["rerun"],["refund-code"])
