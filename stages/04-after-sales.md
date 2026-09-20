@@ -78,3 +78,15 @@ local prerequisite/handoff mechanics only. Actual Agent SDK PreToolUse/PostToolU
 hooks, heterogeneous result normalization, few-shot intent/escalation prompts,
 multi-concern decomposition and live tool-path checks remain pending. No SDK hook
 is installed or simulated as live. Full course approval remains with the founder.
+
+Inspect a named case with `python3 -m exercises.after_sales.demo --scenario human`
+(or ambiguous, unverified, verified, exception, foreign). This command runs
+actual business calls in temporary teaching state and prints their events/ledger.
+Its exit code only means the demo ran: inspect outcome.status for blocked or
+needs_human_review. The verified scenario explicitly sets simulated identity as
+fixture setup, never a customer-controlled request. On the learning start the
+unimplemented workflow raises NOT_READY; try demos after your implementation.
+
+A routine inquiry needs no refund amount. A persisted handoff includes the
+requested date/reason and already-observed order/policy facts. On an immediate
+human request those observed fields remain null: no lookup is invented.
