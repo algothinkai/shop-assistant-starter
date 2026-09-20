@@ -30,9 +30,12 @@ your working directory and spelling; do not load the entire repository at once.
 Before changing any file, classify: team invariant, personal response preference,
 cross-directory test convention, one-off investigation. Predict which a teammate
 will receive from Git. Inspect root CLAUDE.md, exercises/collaboration/CLAUDE.md,
-its @import and .claude/rules/collaboration-tests.md. In Claude Code use /memory
-to inspect loaded files, read checks.py, and inspect loading again; do not treat
-the model saying it obeyed as proof. Record installed version and observable tool
+its @import and .claude/rules/collaboration-tests.md. The guide names /memory;
+current /memory lists configuration locations, including absent files. Use
+/context to inspect actual loaded instructions: record a fresh session before
+and after reading checks.py. In a separate fresh session read only report.py as
+a nonmatching control, so an already-loaded test rule cannot contaminate it.
+Do not treat the model saying it obeyed as proof. Record installed version and observable tool
 messages, including missing features. Do not edit global personal files for this
 lab: sketch a personal preference and explain why it should stay uncommitted.
 
@@ -47,7 +50,7 @@ installing a competing command. For a personal variant, choose a different name.
 
 Codex path: open Codex from exercises/collaboration so its nested AGENTS.md is in
 the instruction chain. Read the referenced standard explicitly and ask for the
-same bounded search. This is not the Claude /memory, glob-rule or forked-skill
+same bounded search. This is not the Claude /context, glob-rule or forked-skill
 experiment. Record the Codex version and observations separately. If either tool
 is unavailable, perform the searches in a terminal and retain UNVERIFIED for that
 tool-specific checkpoint. Nothing in a Python PASS certifies tool loading.
@@ -97,7 +100,8 @@ Exam Guide v1.0: 2.5 and 3.1–3.5. Current sources checked 2026-09-20:
 [Claude skills](https://code.claude.com/docs/en/skills),
 [Claude workflow](https://code.claude.com/docs/en/best-practices),
 [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
-Guide/current distinctions: current path rules can load on reading matching files;
+Guide/current distinctions: /memory lists locations, while /context shows loaded
+instructions; current path rules can load on reading matching files;
 custom commands are now part of skills while legacy command files remain supported;
 allowed-tools is an auto-approval list, not a replacement for permission controls;
 a forked skill does not inherit conversation history. Inspect your installed
