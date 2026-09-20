@@ -126,9 +126,11 @@ class RuntimeBoundaryChecks(unittest.IsolatedAsyncioTestCase):
     async def test_real_sdk_transport_does_not_inherit_raw_cli_stderr(self):
         import subprocess
         import sys
+        import shlex
         with tempfile.TemporaryDirectory() as directory:
             cli = Path(directory) / "fake-cli"
-            cli.write_text("#!/bin/sh\necho SYNTHETIC_PRIVATE_DIAGNOSTIC >&2\nexit 1\n")
+            witness = Path(directory) / "launched"
+            cli.write_text("#!/bin/sh\necho started > " + shlex.quote(str(witness)) + "\necho SYNTHETIC_PRIVATE_DIAGNOSTIC >&2\nexit 1\n")
             cli.chmod(0o700)
             code = """import asyncio,sys,tempfile
 from pathlib import Path
@@ -146,4 +148,5 @@ asyncio.run(run())
 """
             out = subprocess.run([sys.executable, "-c", code, str(cli)], capture_output=True, text=True, timeout=15)
             self.assertEqual(out.returncode, 0, out.stderr)
+            self.assertEqual(witness.read_text().strip(), "started")
             self.assertNotIn("SYNTHETIC_PRIVATE_DIAGNOSTIC", out.stdout + out.stderr)
