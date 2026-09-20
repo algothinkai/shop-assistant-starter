@@ -147,3 +147,8 @@ UNVERIFIED; deterministic tests establish validation behavior only.
 Stage 5 [reconciliation practice](stages/05-reconciliation.md) separates stated and
 calculated amounts and preserves other/unclear categories. Its dedicated exercise
 is separate from passing baseline tests and makes no model or payment calls.
+
+This is the **Stage 5 reconciliation reference**. The stated/calculated fields and
+category behavior pass the same dedicated checks as the learner start. Missing
+inputs remain review issues; known subtotal conflicts stay visible independently.
+Reconciled means this fictional arithmetic contract matched, never refund approval.
