@@ -2,41 +2,13 @@
 
 from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
 import unittest
 from exercises.code_review.fixtures import FILES, ISSUE
 from exercises.code_review.workflow import ReviewFailure
 from .adapter import command, context, decode, execute, run_pass
-
-
-def envelope(host, findings=None):
-    result = {"findings": findings if findings is not None else [deepcopy(ISSUE)]}
-    if host == "claude":
-        return (
-            json.dumps(
-                {
-                    "type": "result",
-                    "subtype": "success",
-                    "is_error": False,
-                    "structured_output": result,
-                }
-            ),
-            None,
-            0,
-        )
-    final = json.dumps(result)
-    events = [
-        {"type": "thread.started", "thread_id": "authored"},
-        {"type": "turn.started"},
-        {
-            "type": "item.completed",
-            "item": {"id": "authored-message", "type": "agent_message", "text": final},
-        },
-        {"type": "turn.completed", "usage": {}},
-    ]
-    return "\n".join(map(json.dumps, events)), final, 0
+from .fixtures import envelope
 
 
 class HostChecks(unittest.TestCase):
@@ -60,6 +32,18 @@ class HostChecks(unittest.TestCase):
             self.assertIn("--output-schema", b)
             self.assertIn("--ephemeral", b)
             self.assertEqual(b[b.index("--sandbox") + 1], "read-only")
+            for feature in (
+                "shell_tool",
+                "unified_exec",
+                "apps",
+                "plugins",
+                "hooks",
+                "code_mode_host",
+            ):
+                self.assertIn(
+                    feature,
+                    [b[i + 1] for i, x in enumerate(b[:-1]) if x == "--disable"],
+                )
             self.assertNotIn("resume", a + b)
             self.assertNotIn("--continue", a + b)
 

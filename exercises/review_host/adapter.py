@@ -12,6 +12,20 @@ from exercises.batch.contracts import parse, BatchFailure
 from exercises.code_review.workflow import plan, aggregate, ReviewFailure
 
 LIMIT = 1000000
+CODEX_DISABLED = (
+    "shell_tool",
+    "unified_exec",
+    "apps",
+    "browser_use",
+    "computer_use",
+    "view_image",
+    "code_mode",
+    "code_mode_host",
+    "multi_agent",
+    "hooks",
+    "plugins",
+    "workspace_dependencies",
+)
 
 
 def obj(properties):
@@ -108,6 +122,13 @@ def execute(args, prompt, directory, *, timeout=120, environment=None):
                 os.killpg(p.pid, signal.SIGKILL)
             except ProcessLookupError:
                 pass
+            except PermissionError:
+                reason = reason or "process_group_cleanup_unverified"
+                if p.poll() is None:
+                    try:
+                        p.kill()
+                    except ProcessLookupError:
+                        pass
             p.wait()
         if reason:
             raise ReviewFailure(reason)

@@ -9,7 +9,7 @@ from exercises.batch.contracts import parse, BatchFailure
 from exercises.code_review.fixtures import FILES
 from exercises.code_review.workflow import ReviewFailure, plan, aggregate
 from .adapter import run_pass, execute
-from .checks import envelope
+from .fixtures import envelope
 
 
 def main():
