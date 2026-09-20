@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+if [ ! -x .venv-agent/bin/python ]; then
+ echo "Run scripts/setup-agent for the existing validation dependency first." >&2
+ exit 2
+fi
+exec .venv-agent/bin/python -m unittest exercises.batch.checks -v
