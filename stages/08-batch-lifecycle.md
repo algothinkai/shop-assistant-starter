@@ -2,7 +2,7 @@
 
 Draft, objective 4.5. Start: `codex/stage-8-lifecycle-start`; reference:
 `codex/stage-8-lifecycle-reference`. Builds on the completed local batch lab.
-Use the existing pinned `.venv-agent` (`scripts/setup-agent-sdk` if needed).
+Use the existing pinned `.venv-agent` (`scripts/setup-agent` if needed).
 Foundation `scripts/test` stays green. `scripts/verify-batch-lifecycle` is an
 explicit exercise and fails until its three lifecycle functions are implemented.
 No website collects keys. All receipts are fictional. No refund/payment occurs.

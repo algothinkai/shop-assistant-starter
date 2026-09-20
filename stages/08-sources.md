@@ -22,3 +22,12 @@ and standard Message params. Results use GET /v1/messages/batches/{id}/results,
 JSONL, arbitrary order and succeeded/errored/canceled/expired outcomes. The local
 20-document/500KB caps are teaching limits, not vendor limits. No API SDK upgrade,
 actual submission, billing result or production deployment is claimed.
+
+Lifecycle extension: GET /v1/messages/batches/{id} is the idempotent status
+operation (https://platform.claude.com/docs/en/api/messages/batches/retrieve).
+Persist ID and request counts; status is in_progress, canceling or ended.
+This lab uses the documented fixed results endpoint instead of following arbitrary
+results_url values, has no automatic POST retry, and records uncertain creation.
+The transport is Python standard-library HTTPS with anthropic-version2023-06-01;
+no Messages client SDK or Agent SDK runs this lifecycle. Local authored transport
+checks do not establish provider acceptance, timing, pricing or model quality.

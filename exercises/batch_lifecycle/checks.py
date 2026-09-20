@@ -5,6 +5,7 @@ from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
+import os
 import subprocess
 import sys
 import unittest
@@ -65,6 +66,24 @@ print('RESTART_GET_ONLY_COLLECTED_AUTHORED')
         self.assertEqual(results[0], results[1])
         self.assertEqual([c["method"] for c in self.transport.calls], ["POST"])
 
+    def test_relative_store_identity_survives_working_directory_change(self):
+        original = Path.cwd()
+        first = Path(self.tmp.name) / "first"
+        second = Path(self.tmp.name) / "second"
+        first.mkdir()
+        second.mkdir()
+        try:
+            os.chdir(first)
+            store = Store("job.json")
+            submit(store, self.payload, self.transport)
+            os.chdir(second)
+            submit(store, self.payload, self.transport)
+            self.assertEqual(len(self.transport.calls), 1)
+            self.assertTrue((first / "job.json").exists())
+            self.assertFalse((second / "job.json").exists())
+        finally:
+            os.chdir(original)
+
     def test_timeout_intent_precedes_post_and_no_replay(self):
         def uncertain(body):
             self.assertEqual(self.store.read()["status"], "submission_unknown")
@@ -121,7 +140,7 @@ print('RESTART_GET_ONLY_COLLECTED_AUTHORED')
             lines([succeeded(DOCUMENTS[0]["id"])]),
             lines([succeeded(DOCUMENTS[0]["id"])] * 2),
             "{}\n",
-            lines([succeeded("unknown")]),
+            lines([dict(succeeded(DOCUMENTS[0]["id"]), custom_id="unknown")]),
         ]
         for value in values:
             self.transport.results = Mock(return_value=value)
@@ -148,6 +167,43 @@ print('RESTART_GET_ONLY_COLLECTED_AUTHORED')
         self.store.write(value)
         with self.assertRaisesRegex(BatchFailure, "invalid_cached_results"):
             collect(self.store, self.transport)
+
+    def test_provider_success_can_still_need_review(self):
+        self.ended()
+        record = succeeded(DOCUMENTS[0]["id"])
+        record["result"]["message"]["stop_reason"] = "max_tokens"
+        self.transport.results = Mock(
+            return_value=lines([record, succeeded(DOCUMENTS[1]["id"])])
+        )
+        value = collect(self.store, self.transport)
+        self.assertEqual(value["status"], "collected")
+        self.assertFalse(value["results"]["report"]["all_validated"])
+        self.assertEqual(
+            value["results"]["report"]["outcomes"][DOCUMENTS[0]["id"]]["status"],
+            "needs_repair",
+        )
+
+    def test_failed_intent_write_never_posts(self):
+        self.store.write = Mock(side_effect=BatchFailure("state_write_failed"))
+        with self.assertRaisesRegex(BatchFailure, "state_write_failed"):
+            submit(self.store, self.payload, self.transport)
+        self.assertEqual(self.transport.calls, [])
+
+    def test_post_return_then_storage_failure_keeps_unknown(self):
+        original = self.store.write
+
+        def write(value):
+            if value["status"] != "submission_unknown":
+                raise BatchFailure("state_write_failed")
+            original(value)
+
+        self.store.write = write
+        with self.assertRaisesRegex(BatchFailure, "state_write_failed"):
+            submit(self.store, self.payload, self.transport)
+        self.assertEqual(self.store.read()["status"], "submission_unknown")
+        with self.assertRaisesRegex(BatchFailure, "unresolved_submission"):
+            submit(self.store, self.payload, self.transport)
+        self.assertEqual(len(self.transport.calls), 1)
 
     def test_fixed_origin_and_bounded_transport(self):
         transport = Transport("fictional-test-key")

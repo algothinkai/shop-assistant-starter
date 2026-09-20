@@ -13,7 +13,7 @@ MAX_STATE = 8_000_000
 
 class Store:
     def __init__(self, path):
-        self.path = Path(path)
+        self.path = Path(path).resolve()
 
     @contextmanager
     def locked(self):
