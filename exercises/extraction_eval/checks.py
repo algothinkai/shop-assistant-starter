@@ -44,6 +44,19 @@ class EvaluationChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             evaluate(c + [c[0]], e)
 
+    def test_renamed_duplicate_documents_cannot_leak_or_inflate_support(self):
+        c, e = data()
+        duplicate = deepcopy(c[0])
+        duplicate["id"] = "E-COPY"
+        duplicate["split"] = "evaluation"
+        duplicate["source"] = "  " + duplicate["source"].replace("\n", "\r\n  ")
+        with self.assertRaises(ValueError):
+            evaluate(c, e + [duplicate])
+        duplicate["id"] = "C-COPY"
+        duplicate["split"] = "calibration"
+        with self.assertRaises(ValueError):
+            evaluate(c + [duplicate], e)
+
     def test_unseen_segment_and_insufficient_support_need_review(self):
         c, e = data()
         e[0]["document_type"] = "handwritten"
@@ -88,7 +101,7 @@ class EvaluationChecks(unittest.TestCase):
         self.assertAlmostEqual(high["mean_confidence"], .955)
 
     def test_reject_invalid_confidence_types_values_and_gold(self):
-        for bad in [True, float("nan"), float("inf"), -.1, 1.1, "0.9"]:
+        for bad in [True, float("nan"), float("inf"), 10**1000, -.1, 1.1, "0.9"]:
             c, e = data()
             e[0]["confidence"]["currency"] = bad
             with self.subTest(bad=bad), self.assertRaises(ValueError):

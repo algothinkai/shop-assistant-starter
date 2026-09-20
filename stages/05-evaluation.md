@@ -21,7 +21,10 @@ segment cannot support reduced review even with scores over 0.9.
 ## Practice
 
 Implement evaluate in evaluation.py. Validate rows, unique IDs, disjoint splits,
-exact five fields/types and finite scores from 0 to 1. Reject bad datasets; do not
+exact five fields/types and finite scores from 0 to 1. Also reject repeated source
+documents after whitespace normalization, even with renamed IDs: duplicates can
+leak labels across splits or inflate calibration support. This minimal check cannot
+detect semantically duplicated documents rewritten with different text. Reject bad datasets; do not
 silently omit failed rows. Report exact-match counts and denominators overall and
 for each document type/field. Missing gold/prediction values count as correct only
 when both are null, but null predictions always require review.
