@@ -46,6 +46,11 @@ class ResearchRuntime:
             "as_of": self.as_of,
             "source_ids": self.scope(topic),
             "prior_report": deepcopy(self.reports.get(topic)),
+            "prior_read_attempts": [
+                deepcopy(e)
+                for e in self.events
+                if e["event"] == "source_read" and e["topic"] == topic
+            ],
             "coverage": self.coverage()["topics"][topic],
             "constraints": "Fictional sources; no refund authority; keep dates and conflicting values.",
         }
@@ -135,7 +140,7 @@ class ResearchRuntime:
         return {
             "report": deepcopy(report),
             "source_metadata": [
-                deepcopy(s)
+                {k: deepcopy(v) for k, v in s.items() if k != "claims"}
                 for s in self.sources
                 if s["id"] in self.reads and s["topic"] == topic
             ],

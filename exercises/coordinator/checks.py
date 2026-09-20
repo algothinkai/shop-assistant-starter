@@ -38,6 +38,14 @@ class CoordinatorChecks(unittest.IsolatedAsyncioTestCase):
         )
         payload = json.loads(result["updatedInput"]["prompt"])
         self.assertEqual(payload["prior_report"], before)
+        self.assertEqual(
+            payload["prior_read_attempts"],
+            [
+                e
+                for e in self.runtime.events
+                if e["event"] == "source_read" and e["topic"] == "returns"
+            ],
+        )
         self.assertEqual(payload["as_of"], self.runtime.as_of)
         self.assertEqual(
             payload["coverage"]["missing_sources"],
@@ -184,3 +192,68 @@ class CoordinatorChecks(unittest.IsolatedAsyncioTestCase):
         )
         self.assertTrue(result["isError"])
         self.assertEqual(self.runtime.reports, {})
+
+    async def test_failed_sources_do_not_leak_their_unread_claims(self):
+        runtime = ResearchRuntime(["returns"], fault="persistent")
+        result = runtime.investigate("returns", ["FAQ-RETURNS-2026-09"])
+        self.assertEqual(result["report"]["findings"], [])
+        self.assertTrue(
+            all("claims" not in source for source in result["source_metadata"])
+        )
+
+    async def test_incomplete_parent_agent_result_is_not_completed_work(self):
+        from claude_agent_sdk import UserMessage, ToolResultBlock
+
+        async def stream():
+            async for message in authored_stream(self.runtime, self.options):
+                if (
+                    isinstance(message, UserMessage)
+                    and not message.parent_tool_use_id
+                    and isinstance(message.content, list)
+                ):
+                    if any(
+                        isinstance(b, ToolResultBlock)
+                        and b.tool_use_id.startswith("delegate-")
+                        for b in message.content
+                    ):
+                        continue
+                yield message
+
+        self.assertEqual(
+            (await consume(stream(), self.runtime))["status"], "unverified"
+        )
+
+    async def test_missing_failed_duplicate_or_misparented_inspection_stays_unverified(
+        self,
+    ):
+        from claude_agent_sdk import UserMessage, ToolResultBlock
+
+        for mode in ("missing", "error", "duplicate", "wrong_parent"):
+            runtime = ResearchRuntime(["shipping"])
+            options = build_options(runtime, self.directory.name, "offline-model")
+
+            async def stream():
+                async for message in authored_stream(runtime, options):
+                    is_inspect = (
+                        isinstance(message, UserMessage)
+                        and isinstance(message.content, list)
+                        and any(
+                            isinstance(b, ToolResultBlock)
+                            and b.tool_use_id.startswith("inspect-")
+                            for b in message.content
+                        )
+                    )
+                    if is_inspect:
+                        if mode == "missing":
+                            continue
+                        if mode == "error":
+                            message.content[0].is_error = True
+                        if mode == "wrong_parent":
+                            message.parent_tool_use_id = "unknown"
+                        if mode == "duplicate":
+                            yield message
+                    yield message
+
+            self.assertEqual(
+                (await consume(stream(), runtime))["status"], "unverified", mode
+            )
