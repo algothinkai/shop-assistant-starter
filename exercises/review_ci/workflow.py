@@ -27,7 +27,26 @@ def run_check(step):
 
 
 def collect(revision, dirty, runner=run_check):
-    raise NotImplementedError("Complete the CI checkpoint before running its stage checks")
+    """A failed check must fail the report while preserving remaining observations."""
+    if (not isinstance(revision, str) or len(revision) != 40
+            or any(c not in "0123456789abcdef" for c in revision) or type(dirty) is not bool):
+        raise ValueError("invalid Git evidence")
+    results = []
+    for step in PLAN:
+        try:
+            code = runner(step)
+            if type(code) is not int:
+                raise ValueError("invalid process outcome")
+            results.append({"check": step[0], "status": "passed" if code == 0 else "failed",
+                            "exit_code": code, "reason": None if code == 0 else "nonzero_exit"})
+        except (ReviewFailure, OSError, ValueError):
+            # Do not serialize exception messages, subprocess output or environment.
+            results.append({"check": step[0], "status": "failed", "exit_code": None,
+                            "reason": "execution_unverified_run_check_locally"})
+    return {"schema_version": 1, "revision": revision, "worktree_dirty": dirty,
+            "scope": "OFFLINE_TEST_EXECUTION_ONLY", "live_model_review": "UNVERIFIED",
+            "status": "passed" if all(r["status"] == "passed" for r in results) else "failed",
+            "checks": results}
 
 
 def main():
