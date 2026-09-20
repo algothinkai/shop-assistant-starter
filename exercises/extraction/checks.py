@@ -81,3 +81,27 @@ class ExtractionChecks(unittest.TestCase):
         result = validate(SOURCE, candidate)
         self.assertTrue(any(x["field"] == "customer_name" for x in result["errors"]))
         self.assertEqual(result["missing_fields"], [])
+
+    def test_truncated_and_embedded_evidence_cannot_validate(self):
+        for source, field, value, evidence in [
+            (SOURCE, "customer_name", "Noor", "Customer: Noor"),
+            (SOURCE.replace("Order: O-1003", "Order: O-10030"), "order_id", "O-1003", "Order: O-1003"),
+            (SOURCE.replace("Order: O-1003", "Prior Order: O-1003"), "order_id", "O-1003", "Order: O-1003"),
+            (SOURCE.replace("Total: USD 76.00", "Total: USD 76.001"), "total_cents", 7600, "Total: USD 76.00"),
+        ]:
+            candidate = copy.deepcopy(CANDIDATE)
+            candidate[field] = {"value": value, "evidence": evidence}
+            self.assertTrue(validate(source, candidate)["errors"], (field, evidence))
+
+    def test_invalid_present_date_is_unresolved_not_absent(self):
+        candidate = copy.deepcopy(CANDIDATE)
+        candidate["purchase_date"] = {"value": None, "evidence": None}
+        source = SOURCE.replace("2026-08-28", "2026-02-31")
+        report = validate(source, candidate)
+        self.assertNotIn("purchase_date", report["missing_fields"])
+        self.assertTrue(any(e["kind"] == "source_unresolved" for e in report["errors"]))
+        requests = []
+        result = extract(source, authored_generator([candidate], requests), mode="authored_fixture_no_model")
+        self.assertEqual(result["status"], "needs_human_review")
+        self.assertEqual(result["review_reason"], "source_unresolved")
+        self.assertEqual(len(requests), 1)

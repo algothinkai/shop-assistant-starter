@@ -20,9 +20,10 @@ def extract(source, generate, *, mode, max_attempts=2):
                     "message": "Generator failed; no extraction success is claimed."}
         report = validate(source, candidate)
         history.append({"candidate": deepcopy(candidate), "validation": deepcopy(report)})
-        if any(error["kind"] == "source_conflict" for error in report["errors"]):
+        source_issue = next((error["kind"] for error in report["errors"] if error["kind"] in ("source_conflict", "source_unresolved")), None)
+        if source_issue:
             return {"mode": mode, "status": "needs_human_review", "candidate": deepcopy(candidate),
-                    "attempts": history, "review_reason": "source_conflict"}
+                    "attempts": history, "review_reason": source_issue}
         if not report["errors"]:
             return {"mode": mode, "status": "needs_human_review" if report["missing_fields"] else "validated_candidate",
                     "candidate": deepcopy(candidate), "attempts": history,

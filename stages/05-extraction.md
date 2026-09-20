@@ -21,8 +21,8 @@ semantic validation. “JSON is valid” is not “the amount is supported.”
 ## Practice and inspect
 
 Implement schema checks with the pinned jsonschema library, then semantic checks
-for this lab's labeled receipt lines. Every non-null value needs an exact source
-excerpt from the correct field, a valid calendar date where relevant, and correct
+for this lab's labeled receipt lines. Every non-null value needs an exact complete source
+line from the correct field, a valid calendar date where relevant, and correct
 normalization (integer cents). Do not silently change the candidate or source.
 
 Run scripts/verify-extraction. Inspect .venv-agent/bin/python -m
@@ -41,6 +41,7 @@ labels are the deliberately narrow supported format, not a universal document pa
 Run the missing, conflict and exhausted scenarios. A genuinely absent field is
 null and goes to human review without repeatedly requesting impossible data.
 A null field whose labeled value is actually present gets correction feedback.
+Present but invalid/unsupported labeled values remain unresolved, not absent.
 Conflicting source totals go directly to review instead of picking the convenient
 quote. A successful candidate is labeled validated_candidate, not an approved
 refund or a calibrated high-confidence extraction. This controller changes no ledger.
