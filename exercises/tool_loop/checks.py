@@ -121,6 +121,16 @@ class TransportChecks(unittest.TestCase):
             with self.assertRaisesRegex(TransportFailure, "missing_local_model_or_key"):
                 MessagesTransport.from_environment()
 
+    def test_http_protocol_failures_are_sanitized(self):
+        import http.client
+        for failure in [http.client.IncompleteRead(b"PRIVATE-BODY"),
+                        http.client.BadStatusLine("PRIVATE-PROVIDER-LINE")]:
+            with self.subTest(failure=type(failure).__name__):
+                client = MessagesTransport("test-model", "not-a-real-key")
+                with patch.object(client._opener, "open", side_effect=failure):
+                    with self.assertRaisesRegex(TransportFailure, "^http_protocol_failure$"):
+                        client([{"role": "user", "content": "fixture"}])
+
     def test_http_request_contract_is_fixed_and_errors_do_not_expose_key(self):
         import urllib.error
         client = MessagesTransport("test-model", "not-a-real-key")

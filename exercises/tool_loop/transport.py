@@ -1,5 +1,6 @@
 """Explicit opt-in local HTTPS adapter; no SDK or automatic retries."""
 import json
+import http.client
 import os
 import urllib.error
 import urllib.request
@@ -44,7 +45,11 @@ class MessagesTransport:
                 raise TransportFailure("invalid_response")
             return value
         except urllib.error.HTTPError as exc:
-            raise TransportFailure(f"http_{exc.code}") from None
+            code = exc.code
+            exc.close()
+            raise TransportFailure(f"http_{code}") from None
+        except http.client.HTTPException:
+            raise TransportFailure("http_protocol_failure") from None
         except (urllib.error.URLError, TimeoutError, OSError):
             raise TransportFailure("network_failure") from None
         except (ValueError, UnicodeError):
