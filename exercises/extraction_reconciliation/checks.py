@@ -45,6 +45,7 @@ class ReconciliationChecks(unittest.TestCase):
         report = reconcile(SOURCE + "Total: USD 55.00\n")
         self.assertTrue(report["record"]["conflict_detected"])
         self.assertIsNone(report["record"]["stated_total_cents"])
+        self.assertEqual(report["record"]["calculated_total_cents"], 5430)
 
     def test_decimal_cents_avoid_float_and_rounding_guesses(self):
         source = SOURCE.replace("19.75", "0.10").replace("8.00", "0.20").replace("47.50", "0.40").replace("3.80", "0.00").replace("5.00", "0.00").replace("2.00", "0.00").replace("54.30", "0.40")
@@ -92,3 +93,16 @@ class ReconciliationChecks(unittest.TestCase):
         for source in ("", " ", None, "x" * 20001):
             with self.assertRaises(ValueError):
                 reconcile(source)
+
+    def test_missing_stated_total_does_not_erase_independent_calculation(self):
+        report = reconcile(SOURCE.replace("Total: USD 54.30\n", ""))
+        self.assertEqual(report["status"], "needs_human_review")
+        self.assertIsNone(report["record"]["stated_total_cents"])
+        self.assertEqual(report["record"]["calculated_total_cents"], 5430)
+        self.assertIsNone(report["record"]["difference_cents"])
+
+    def test_bare_other_and_duplicate_receipt_ids_remain_unresolved(self):
+        report = reconcile(SOURCE.replace("Category: filter", "Category: other"))
+        self.assertEqual(report["record"]["category"], "unclear")
+        self.assertIn("category_unresolved", report["issues"])
+        self.assertIsNone(reconcile(SOURCE + "Receipt: R-4002\n")["record"]["calculated_total_cents"])

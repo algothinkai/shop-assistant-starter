@@ -27,11 +27,13 @@ in observations. Reject malformed amounts/quantities and unknown lines. Repeated
 amount fields require review even if identical; differing repetitions flag conflict.
 Do not use stated Subtotal as the calculation base: recompute from item lines.
 A missing/invalid/duplicated charge makes the calculated total null, while a unique
-valid stated Total remains visible. Preserve mismatches and report review issues.
+valid stated Total remains visible. Conversely, a missing/repeated stated Total
+does not erase an independently calculable total; its difference stays null and
+review remains required. Preserve mismatches and report review issues.
 
 For categories use kettle/grinder/filter when the explicit source label matches
 case-insensitively. A known but unlisted label uses other plus its original detail;
-? or unclear, a missing label, or multiple category labels requires unclear/null
+? or unclear, a bare other label without concrete detail, a missing label, or multiple category labels requires unclear/null
 and review. This is an authored classification convention, not semantic inference
 from product names. Other retains a concrete unfamiliar fact; unclear lacks one.
 
