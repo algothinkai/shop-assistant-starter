@@ -17,7 +17,7 @@ substitute preset fixture success for a live Claude Code/API/SDK/MCP check.
 | 3 MCP and tool design | Wrap business functions with clear contracts and structured errors | codex/stage-3-start; edit exercises/mcp_shop/actions.py | Discovery, permissions, resources, tool choice, failure boundaries | Restart local server(s), reset, inspect protocol logs |
 | 4 Reliable after-sales | Enforce identity/policy gates and structured human handoff | codex/stage-4-start; edit exercises/after_sales/workflow.py | Block unsafe refund, normalize inputs, clarify ambiguous request, escalate exception | Reset ledger and verification state; replay failure |
 | 5 Receipt extraction | Extract text receipts with examples, schema, nullable fields and bounded retry | codex/stage-5-start; edit exercises/extraction/validation.py | Format and semantic validation, human review for uncertain fields, per-field/doc metrics | Reset fixture output; inspect validation feedback |
-| 6 Long context/recovery | Preserve case facts, prune tool results, resume; isolate codebase exploration | Stage-6 start ref pending; edit state/recovery experiments | Stale context detected, resume checklist and fork choice explained | Restore stage start and case snapshot |
+| 6 Long context/recovery | Preserve case facts, prune tool results, resume; isolate codebase exploration | codex/stage-6-start; edit exercises/context/workflow.py | Stale context detected, resume checklist and fork choice explained | Restore stage start and case snapshot |
 | 7 Multi-agent research | Delegate dated policy research with explicit context and partial failures | Stage-7 start ref pending; edit coordinator/delegate layer | Independent investigations, conflict/source dates and gaps surfaced | Replay partial-failure fixture; re-run missing task |
 | 8 Overnight batch | Decide sync vs batch; correlate and retry individual failures | Stage-8 start ref pending; edit batch experiment | Small sample improves first; IDs match outcomes; failed items retry only | Reset batch output; rerun sample |
 | 9 CI/review | Run independent structured, low-noise code review in non-interactive mode | Stage-9 start ref pending; edit CI/reviewer config | Single/cross-file passes, dedupe and findings checked; tool-specific live check | Run local review fixture; restore config |
@@ -31,7 +31,7 @@ for the initial baseline after its checks and review pass.
 Stage 1 draft now has separate `codex/stage-1-start` and
 `codex/stage-1-reference` refs. Read [its checkpoints](01-collaboration.md).
 On these branches, verify-stage 1 runs explicit exercise checks (expected failure
-before repair); stages 6–10 remain NOT_READY. Baseline tests stay green.
+before repair); later dedicated stages remain unfinished until implemented. Baseline tests stay green.
 
 Stage 2 draft has separate codex/stage-2-start and codex/stage-2-reference refs.
 Read [the tool-loop checkpoint](02-tool-loop.md). On these refs verify-stage 2
@@ -50,3 +50,7 @@ Stage 5 now has separate start/reference validator branches. Read
 [the receipt exercise](05-extraction.md). scripts/verify-stage 5 and
 scripts/verify-extraction run the same explicit checks; start failures are
 intentional. Full model extraction/evaluation coverage remains pending.
+
+Stage6 local case-context start/reference now have scripts/verify-context. Read
+[case facts and recovery](06-context.md). Actual SDK session and code-exploration
+labs remain pending; this local snapshot does not prove live agent resumption.
