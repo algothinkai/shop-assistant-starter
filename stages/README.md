@@ -57,6 +57,6 @@ labs remain pending; this local snapshot does not prove live agent resumption.
 
 Stage 10 has a separate capstone start/reference with six authored fictional
 combined-fault cases. Read [Stage 10](10-capstone.md). The start keeps a blank
-response and unfinished structural verifier; baseline tests stay green. The
+response and supplied per-case structural verifier; baseline tests stay green. The
 reference contains author-draft decisions, but local structure alone never proves
 independent reasoning, live tool use or mastery.

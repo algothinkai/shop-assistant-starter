@@ -7,8 +7,8 @@ foundation. No provider key or live model is needed for the local challenge.
 
 This is a **fictional authored casebook**, not a transcript from a model or shop.
 Six changed situations reuse the earlier business/tool/receipt/research/review
-skills. C1–C5 together mention every one of Guidev1.0's 30 task statements; C6
-asks for another developer-setting transfer. This mapping is a design checklist,
+skills. C1–C6 together mention every one of Guidev1.0's 30 task statements; C6
+also asks for a changed developer-setting transfer. This mapping is a design checklist,
 not proof that all 30 skills have been demonstrated. No online judge, payment or
 real customer record is used.
 
@@ -42,11 +42,15 @@ scripts/verify-code-review
 scripts/verify-review-host
 scripts/verify-review-quality
 scripts/verify-review-ci
+python3 -m exercises.capstone.workflow exercises/capstone/response.json --case C1
 scripts/verify-capstone
 python3 -m exercises.capstone.workflow exercises/capstone/response.json
 ```
 
-Earlier stage checks verify their own authored contracts. Some tool stages need
+After writing C1, run the --case C1 command; then C2, and so on. The
+preexisting validator is supplied on the learner start, so no verifier coding is
+required. The full command and six explicit checks work once all six responses
+are present. Earlier stage checks verify their own authored contracts. Some tool stages need
 their pinned optional environment; if unavailable, record exactly which check was
 not run. Do not cite a fixture as live Claude/Codex proof. The capstone CLI checks
 six response shapes and case evidence keys; `STRUCTURE_ONLY` and `UNVERIFIED`
