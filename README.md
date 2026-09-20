@@ -129,3 +129,8 @@ and held-out data remain tiny authored examples, not evidence for deployment.
 Stage 5 Messages extraction has separate [start/reference instructions](stages/05-messages.md).
 The default demo uses an authored response. Only explicit --live sends a potentially
 billable request using learner-local credentials; compatibility is not yet live-verified.
+
+This is the **Stage 5 Messages reference**. Request construction and terminal
+candidate parsing pass the same offline checks as the learning start. Actual API
+compatibility and live receipt extraction remain UNVERIFIED; the default demo
+never calls a model. Attempt the separate messages start before reading this answer.
