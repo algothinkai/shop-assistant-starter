@@ -26,7 +26,7 @@ Other commands:
 ```sh
 scripts/test             # Foundation unit tests; expected to pass on a fresh clone
 scripts/verify-stage 0   # Stage 0 observable baseline check
-scripts/verify-stage 1   # Explicit NOT_READY until stage 1 is released
+scripts/verify-stage 1   # Stage 1 exercise: intentional failures until repaired
 scripts/reset            # Restore empty local teaching state and event history
 python3 -m shop_assistant demo T-1001  # Run a preset from the terminal
 ```
@@ -54,8 +54,8 @@ shell, never on the algothink website or in screenshots.
 - `shop_assistant/web.py`: local HTML workbench. It is a viewer and demo trigger,
   not a hosted agent or commerce backend.
 - `stages/README.md`: stage goals, allowed edits, acceptance and recovery.
-  Only Stage 0 is implemented. Later validation commands say NOT_READY instead
-  of making the fresh-install test suite fail.
+  This branch adds the separate Stage 1 exercise. Stages 2–10 say NOT_READY;
+  the fresh-install baseline test suite remains green.
 
 Identity verification is a **simulated Boolean in local teaching state**, never
 a claim of real customer authentication. `record_refund` checks that state and
@@ -69,3 +69,7 @@ are tracked separately as later stages are authored, so opening this default
 checkout does not reveal every future answer. The complete course, rubrics and
 mock exams live in the separate algothink repository and require founder
 approval before public use.
+
+This is a **Stage 1 draft branch**. The Stage 0 description above remains the
+foundation; see [Stage 1](stages/01-collaboration.md) for its separate start and
+reference, intentional exercise failures, scope and recovery.
