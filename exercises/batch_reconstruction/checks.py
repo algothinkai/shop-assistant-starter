@@ -2,36 +2,12 @@
 
 from copy import deepcopy
 import unittest
-from exercises.batch.contracts import BatchFailure, bind
-from exercises.batch.fixtures import DOCUMENTS, CANDIDATES, failure, succeeded, lines
+from exercises.batch.contracts import BatchFailure
+from exercises.batch.fixtures import DOCUMENTS, CANDIDATES, failure, lines
 from exercises.batch.workflow import retry_plan
 from exercises.extraction.schema import FIELDS
 from .merge import reconstruct
-
-
-def case(source=None):
-    docs = deepcopy(DOCUMENTS)
-    if source is not None:
-        docs[0]["source"] = source
-    parent = docs[0]["id"]
-    source = docs[0]["source"]
-    cut = source.index("Item:")
-    chunks = {parent: [source[:cut], source[cut:]]}
-    manifest = bind(docs, "fixture-model", "Preserve exact source facts")["manifest"]
-    original = lines(
-        [failure(parent, error_type="invalid_request_error"), succeeded(docs[1]["id"])]
-    )
-    plan = retry_plan(manifest, original, chunks=chunks)
-    rows = []
-    for child in plan["payload"]["manifest"]["documents"]:
-        candidate = {
-            field: deepcopy(value)
-            if value["evidence"] in child["source"]
-            else {"value": None, "evidence": None}
-            for field, value in CANDIDATES[parent].items()
-        }
-        rows.append(succeeded(child["id"], candidate))
-    return manifest, original, chunks, rows
+from .fixtures import case
 
 
 class MergeChecks(unittest.TestCase):
@@ -50,6 +26,57 @@ class MergeChecks(unittest.TestCase):
         self.assertEqual(parent["candidate"], CANDIDATES[DOCUMENTS[0]["id"]])
         self.assertEqual(report["retained_validated_ids"], [DOCUMENTS[1]["id"]])
         self.assertTrue(all(parent["field_evidence"][field] for field in FIELDS))
+
+    def test_repeated_agreement_retains_both_supporting_parts(self):
+        source = DOCUMENTS[0]["source"].replace(
+            "Item:", "Item: NOTE\nOrder: O-1003\nItem:", 1
+        )
+        parent = self.run_case(case(source))["parents"][DOCUMENTS[0]["id"]]
+        self.assertEqual(parent["status"], "ready_for_review")
+        self.assertEqual(len(parent["field_evidence"]["order_id"]), 2)
+        self.assertFalse(parent["accepted"])
+
+    def test_split_labeled_line_requires_repair_not_guessing(self):
+        value = case()
+        manifest, original, chunks, _ = value
+        source = DOCUMENTS[0]["source"]
+        cut = source.index("76.00") + 3
+        chunks[DOCUMENTS[0]["id"]] = [source[:cut], source[cut:]]
+        plan = retry_plan(manifest, original, chunks=chunks)
+        rows = []
+        from exercises.batch.fixtures import succeeded
+
+        for child in plan["payload"]["manifest"]["documents"]:
+            candidate = {
+                field: deepcopy(item)
+                if item["evidence"] in child["source"]
+                else {"value": None, "evidence": None}
+                for field, item in CANDIDATES[DOCUMENTS[0]["id"]].items()
+            }
+            rows.append(succeeded(child["id"], candidate))
+        parent = self.run_case((manifest, original, chunks, rows))["parents"][
+            DOCUMENTS[0]["id"]
+        ]
+        self.assertEqual(parent["status"], "needs_review")
+        self.assertTrue(parent["chunk_problems"])
+        self.assertFalse(parent["accepted"])
+
+    def test_unrepaired_original_failure_remains_in_handoff(self):
+        manifest, _, chunks, rows = case()
+        original = lines(
+            [
+                failure(DOCUMENTS[0]["id"], error_type="invalid_request_error"),
+                failure(DOCUMENTS[1]["id"], kind="canceled"),
+            ]
+        )
+        report = self.run_case((manifest, original, chunks, rows))
+        self.assertEqual(report["held_for_review"], [DOCUMENTS[1]["id"]])
+        self.assertEqual(
+            report["original_outcomes"][DOCUMENTS[1]["id"]]["reason"], "canceled"
+        )
+        self.assertEqual(
+            report["parents"][DOCUMENTS[0]["id"]]["status"], "ready_for_review"
+        )
 
     def test_reordering_output_does_not_reorder_source_parts(self):
         value = case()

@@ -1,7 +1,7 @@
 """Authored reconstruction example, no model or network call."""
 
 import json
-from .checks import case
+from .fixtures import case
 from .merge import reconstruct
 from exercises.batch.fixtures import lines
 
