@@ -3,7 +3,7 @@ from copy import deepcopy
 from .validation import validate
 
 
-def extract(source, generate, *, mode, max_attempts=2):
+def extract(source, generate, *, mode, max_attempts=2, validator=validate):
     if not isinstance(source, str) or not source.strip():
         raise ValueError("A nonempty source text is required")
     if mode not in ("authored_fixture_no_model", "live_model"):
@@ -18,7 +18,7 @@ def extract(source, generate, *, mode, max_attempts=2):
         except Exception:
             return {"mode": mode, "status": "generation_failed", "attempts": history,
                     "message": "Generator failed; no extraction success is claimed."}
-        report = validate(source, candidate)
+        report = validator(source, candidate)
         history.append({"candidate": deepcopy(candidate), "validation": deepcopy(report)})
         source_issue = next((error["kind"] for error in report["errors"] if error["kind"] in ("source_conflict", "source_unresolved")), None)
         if source_issue:
