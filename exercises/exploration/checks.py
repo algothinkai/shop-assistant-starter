@@ -89,3 +89,10 @@ class ExplorationChecks(unittest.TestCase):
         entry=export(self.out,value)
         state=recover(self.root,self.out,manifest({**self.entries,"refund-code":entry}))
         self.assertEqual(state["rerun"],["refund-code"])
+
+    def test_valid_definition_spacing_is_reusable(self):
+        path=self.root/TASKS["refund-code"];path.write_text("def refund_valid ():\n    return None\n")
+        entry=export(self.out,scan(self.root,"refund-code"))
+        state=recover(self.root,self.out,manifest({**self.entries,"refund-code":entry}))
+        self.assertEqual(state["status"],"ready")
+        self.assertEqual(state["rerun"],[])
