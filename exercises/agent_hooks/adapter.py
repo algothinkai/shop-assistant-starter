@@ -34,7 +34,7 @@ def build_options(shop, audit, model):
         return content(value)
 
     before, after = callbacks(shop, audit)
-    return ClaudeAgentOptions(model=model, tools=[], setting_sources=[], strict_mcp_config=True,
+    return ClaudeAgentOptions(model=model, stderr=lambda _line: None, tools=[], setting_sources=[], strict_mcp_config=True,
         mcp_servers={"shop": create_sdk_mcp_server("shop", tools=[refund, shipping])},
         allowed_tools=[REFUND, SHIPPING], max_turns=4, max_budget_usd=0.10,
         hooks={"PreToolUse": [HookMatcher(matcher="^mcp__shop__request_refund$", hooks=[before])],

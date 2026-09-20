@@ -90,3 +90,60 @@ class HookChecks(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.options.max_turns, 4)
         self.assertEqual(self.options.max_budget_usd, 0.10)
         self.assertNotEqual(self.options.permission_mode, "bypassPermissions")
+
+
+class RuntimeBoundaryChecks(unittest.IsolatedAsyncioTestCase):
+    async def test_error_missing_and_success_terminal_are_distinct(self):
+        import contextlib
+        import io
+        from unittest.mock import patch
+        from claude_agent_sdk import ResultMessage
+        from . import demo
+        for kind, expected in (("error_max_turns", 1), ("missing", 1), ("success", 0)):
+            class Client:
+                def __init__(self, options):
+                    self.options = options
+                async def __aenter__(self):
+                    return self
+                async def __aexit__(self, *args):
+                    return False
+                async def query(self, prompt):
+                    return None
+                async def receive_response(self):
+                    await self.options.hooks["PreToolUse"][0].hooks[0]({"hook_event_name": "PreToolUse", "tool_name": REFUND, "tool_input": {"order_id": "O-1003", "amount_cents": 7600}}, "r", {})
+                    await self.options.hooks["PostToolUse"][0].hooks[0]({"hook_event_name": "PostToolUse", "tool_name": SHIPPING, "tool_response": content({"timestamp": 1788220800, "status": 20})}, "s", {})
+                    if kind != "missing":
+                        yield ResultMessage(subtype=kind, is_error=kind != "success", duration_ms=1, duration_api_ms=1, num_turns=1, session_id="synthetic", errors=["PRIVATE_DIAGNOSTIC"], result="PRIVATE_RESULT")
+            output = io.StringIO()
+            with patch.object(demo, "ClaudeSDKClient", Client), patch.dict("os.environ", {"ANTHROPIC_MODEL": "test-no-network"}), contextlib.redirect_stdout(output):
+                code = await demo.run(True)
+            self.assertEqual(code, expected)
+            data = json.loads(output.getvalue())
+            self.assertTrue(data["hooks_observed"])
+            self.assertEqual(data["status"], "OBSERVED_REQUESTED_HOOKS" if expected == 0 else "UNVERIFIED")
+            self.assertNotIn("PRIVATE_", output.getvalue())
+
+    async def test_real_sdk_transport_does_not_inherit_raw_cli_stderr(self):
+        import subprocess
+        import sys
+        with tempfile.TemporaryDirectory() as directory:
+            cli = Path(directory) / "fake-cli"
+            cli.write_text("#!/bin/sh\necho SYNTHETIC_PRIVATE_DIAGNOSTIC >&2\nexit 1\n")
+            cli.chmod(0o700)
+            code = """import asyncio,sys,tempfile
+from pathlib import Path
+from claude_agent_sdk import ClaudeSDKClient
+from shop_assistant.business import ShopService
+from exercises.agent_hooks.adapter import build_options
+async def run():
+    with tempfile.TemporaryDirectory() as directory:
+        options=build_options(ShopService(Path(directory)), [], 'no-model')
+        options.cli_path=sys.argv[1]
+        try:
+            async with ClaudeSDKClient(options=options): pass
+        except Exception: pass
+asyncio.run(run())
+"""
+            out = subprocess.run([sys.executable, "-c", code, str(cli)], capture_output=True, text=True, timeout=15)
+            self.assertEqual(out.returncode, 0, out.stderr)
+            self.assertNotIn("SYNTHETIC_PRIVATE_DIAGNOSTIC", out.stdout + out.stderr)
