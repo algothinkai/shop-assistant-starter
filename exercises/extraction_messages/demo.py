@@ -33,7 +33,7 @@ def main():
     print(json.dumps({"verification": ("LIVE_CANDIDATE_VALIDATED" if passed else "UNVERIFIED")
                       if args.live else "OFFLINE_ONLY",
                       "mode": result["mode"], "status": result["status"],
-                      "requests_sent": generator.calls, "validated_attempts": len(result["attempts"]),
+                      "generation_calls": generator.calls, "candidates_checked": len(result["attempts"]),
                       "limitation": "Narrow source validation only; no accuracy, confidence calibration or refund approval."}, indent=2))
     return 0 if passed else 1
 

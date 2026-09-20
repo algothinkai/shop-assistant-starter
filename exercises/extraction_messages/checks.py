@@ -126,3 +126,16 @@ class MessagesExtractionChecks(unittest.TestCase):
         with patch("sys.argv", ["demo", "--live"]), patch.dict("os.environ", {}, clear=True), patch("sys.stdout", new_callable=io.StringIO) as output:
             self.assertEqual(main(), 1)
         self.assertEqual(json.loads(output.getvalue())["verification"], "UNVERIFIED")
+
+    def test_live_transport_failure_cannot_claim_success_or_print_response(self):
+        with patch("sys.argv", ["demo", "--live"]), patch.dict("os.environ", {"ANTHROPIC_MODEL": "test"}), patch("sys.stdout", new_callable=io.StringIO) as output, patch.object(Transport, "from_environment", return_value=Mock(side_effect=ExtractionFailure("PRIVATE-KEY"))):
+            self.assertEqual(main(), 1)
+        result = json.loads(output.getvalue())
+        self.assertEqual(result["verification"], "UNVERIFIED")
+        self.assertEqual(result["generation_calls"], 1)
+        self.assertEqual(result["candidates_checked"], 0)
+        self.assertNotIn("PRIVATE", output.getvalue())
+
+    def test_redirect_handler_refuses_forwarding(self):
+        from ..tool_loop.transport import NoRedirect
+        self.assertIsNone(NoRedirect().redirect_request(None, None, 302, "redirect", {}, "https://elsewhere.invalid"))
