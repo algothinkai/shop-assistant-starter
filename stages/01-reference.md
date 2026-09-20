@@ -1,6 +1,6 @@
 # Stage 1 reference — review only after attempting the checkpoint
 
-Start commit: 8287abe11dc240f751054b4b03ff1cbe2d8a340a.
+Start commit: 3d2edf1a40dd7d64d01b4f95c6ce153f1a71fec8.
 The repair changes only report.py. Filter by run before counting; use the terminal
 outcome instead of guessing from successful calls. The original checks are
 unchanged. One pass takes O(n) time and O(1) auxiliary space. This operates on the
