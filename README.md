@@ -91,3 +91,8 @@ host connection, and does not approve the draft curriculum for publication.
 Stage 4 learning start builds on the completed Stage 3 reference. Read [Stage 4](stages/04-after-sales.md) for the deterministic workflow exercise.
 Only `scripts/verify-stage 4` intentionally fails before implementation; foundation
 checks stay passing. Agent SDK hooks are not yet implemented or verified.
+
+This is the **Stage 4 reference branch**. The deterministic workflow is complete
+for the documented local slice and passes the start's same checks. Attempt the
+separate codex/stage-4-start before comparing this reference. SDK hooks, live
+intent interpretation and the complete Module 4 course remain pending.
