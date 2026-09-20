@@ -34,7 +34,7 @@ def build_request(model, request):
             "messages": [{"role": "user", "content": content}]}
 
 
-def read_candidate(response):
+def read_candidate(response, *, expected_name="extract_receipt"):
     if (not isinstance(response, dict) or response.get("type") != "message"
             or response.get("role") != "assistant" or response.get("stop_reason") != "tool_use"
             or not isinstance(response.get("content"), list)):
@@ -51,7 +51,7 @@ def read_candidate(response):
     if len(calls) != 1:
         raise ExtractionFailure("expected_one_extraction_tool")
     call = calls[0]
-    if (call.get("name") != "extract_receipt" or not isinstance(call.get("id"), str)
+    if (call.get("name") != expected_name or not isinstance(call.get("id"), str)
             or not call["id"].strip() or not isinstance(call.get("input"), dict)):
         raise ExtractionFailure("invalid_extraction_tool")
     return deepcopy(call["input"])
