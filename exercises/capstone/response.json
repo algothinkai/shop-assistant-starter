@@ -1,1 +1,92 @@
-[]
+[
+  {
+    "id": "C1",
+    "choice": "B",
+    "reason": "The lookup returned no match, simulated identity is unverified, policy applicability is unclear, an explicit human request exists, and tool_use lacks its result. Clarify and hand off without ledger mutation.",
+    "prediction": "The loop needs matching tool_result before end_turn. The ledger stays unchanged; handoff lists missing identity, order and policy facts.",
+    "evidence": [
+      "order_lookup",
+      "identity",
+      "policy",
+      "tool_loop",
+      "customer_request"
+    ],
+    "transfer_choice": "B",
+    "transfer_reason": "The corrected ID and verified identity remove two gaps but the policy exception still needs a person."
+  },
+  {
+    "id": "C2",
+    "choice": "B",
+    "reason": "A schema-valid but semantically wrong total cannot be accepted. Null tax is allowed; duplicate and missing custom IDs cannot be guessed or blindly replayed.",
+    "prediction": "Validate totals against source text, quarantine r-1 and r-2, repair a small sample and send unresolved fields to human review.",
+    "evidence": [
+      "receipt",
+      "candidate",
+      "results",
+      "batch_state",
+      "source_kind"
+    ],
+    "transfer_choice": "B",
+    "transfer_reason": "An image changes the input modality. This text-only path is unsupported without transcription or a separate image design."
+  },
+  {
+    "id": "C3",
+    "choice": "B",
+    "reason": "The dated policy and later FAQ disagree on applicability, while the shipping delegate failed. A targeted follow-up should request the missing effective-date scope.",
+    "prediction": "Synthesis contains dated claims and a shipping failure marker; it never presents a complete answer until the gap is resolved.",
+    "evidence": [
+      "policy",
+      "faq",
+      "shipping_delegate",
+      "gap",
+      "customer"
+    ],
+    "transfer_choice": "A",
+    "transfer_reason": "A later valid policy resolves only the policy portion; the failed shipping portion remains explicit."
+  },
+  {
+    "id": "C4",
+    "choice": "B",
+    "reason": "The checkout changed after the note, so locate current source and tests. Resolve MCP tool scope before using it, isolate exploration and plan a safe narrow edit.",
+    "prediction": "Current refund guard and identity-revocation test are observed; the changed implementation is verified using nonzero and revocation examples.",
+    "evidence": [
+      "old_note",
+      "current_checkout",
+      "mcp",
+      "tests",
+      "request"
+    ],
+    "transfer_choice": "A",
+    "transfer_reason": "A separate exploratory branch or session limits stale-context contamination of the safety patch."
+  },
+  {
+    "id": "C5",
+    "choice": "B",
+    "reason": "Terminal failure invalidates the integration pass even when a JSON file exists. Prior absence is not proof of repair, and a confident false alarm still needs categorical review.",
+    "prediction": "The aggregate remains incomplete; local finding and prior issue are retained, noisy reports are held, and fixture CI states live review unverified.",
+    "evidence": [
+      "local_pass",
+      "integration_pass",
+      "prior",
+      "noise",
+      "ci"
+    ],
+    "transfer_choice": "A",
+    "transfer_reason": "A trusted future workflow still needs observed fresh host execution, exact source/test context and terminal evidence."
+  },
+  {
+    "id": "C6",
+    "choice": "B",
+    "reason": "Project CLAUDE.md and the policy skill are relevant, receipt path rules are not. Inspect the nonzero refund data path and improve tests before trusting the generated patch.",
+    "prediction": "The zero-only test misses the unit bug; a nonzero example reproduces it and verifies the focused correction.",
+    "evidence": [
+      "project_rule",
+      "path_rule",
+      "skill",
+      "patch",
+      "test"
+    ],
+    "transfer_choice": "A",
+    "transfer_reason": "A one-off request uses a focused instruction and test instead of another global reusable skill."
+  }
+]
