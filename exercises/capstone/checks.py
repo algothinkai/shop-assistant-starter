@@ -8,15 +8,25 @@ from .workflow import CapstoneError, inspect, load_json
 
 ROOT = Path(__file__).parent
 CASES = json.loads((ROOT / "cases.json").read_text())
+# A deliberately content-agnostic specimen exercises parser behavior without
+# revealing the reference decisions or treating a plausible answer as correct.
+SAMPLE = [
+    {
+        "id": case["id"],
+        "choice": case["choices"][0]["id"],
+        "reason": "This synthetic answer tests structure only; it is not a safe decision.",
+        "prediction": "A reviewer still needs to inspect the observed result and uncertainty.",
+        "evidence": case["required_evidence"],
+        "transfer_choice": case["transfer_choices"][0]["id"],
+        "transfer_reason": "A changed condition needs independent causal review before acceptance.",
+    }
+    for case in CASES["cases"]
+]
 
 
 class CapstoneChecks(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.responses = json.loads((ROOT / "response.json").read_text())
-
-    def test_all_six_bound_refs_and_full_author_response_structure(self):
-        report = inspect(CASES, self.responses)
+    def test_all_six_bound_refs_and_full_synthetic_structure(self):
+        report = inspect(CASES, SAMPLE)
         self.assertEqual({x["id"] for x in report["cases"]}, {"C1","C2","C3","C4","C5","C6"})
         self.assertTrue(report["all_required_evidence_cited"])
         self.assertEqual(report["mastery"], "UNVERIFIED")
@@ -26,25 +36,25 @@ class CapstoneChecks(unittest.TestCase):
         self.assertEqual(len(refs),30)
 
     def test_wrong_or_missing_case_not_misreported_complete(self):
-        for changed in (self.responses[:-1], self.responses+[self.responses[-1]]):
+        for changed in (SAMPLE[:-1], SAMPLE+[SAMPLE[-1]]):
             with self.assertRaises(CapstoneError): inspect(CASES, changed)
-        bad = deepcopy(self.responses); bad[0]["id"] = "C2"
+        bad = deepcopy(SAMPLE); bad[0]["id"] = "C2"
         with self.assertRaises(CapstoneError): inspect(CASES,bad)
 
     def test_missing_evidence_keeps_report_incomplete_and_unverified(self):
-        bad = deepcopy(self.responses);bad[0]["evidence"]=["identity"]
+        bad = deepcopy(SAMPLE);bad[0]["evidence"]=["identity"]
         result = inspect(CASES,bad)
         self.assertFalse(result["all_required_evidence_cited"])
         self.assertFalse(result["cases"][0]["demonstrated"])
 
     def test_invalid_choices_and_short_or_oversized_answers_rejected(self):
         for field,value in (("choice","Z"),("transfer_choice","Z"),("reason","ok"),("prediction","x"*2001)):
-            bad=deepcopy(self.responses);bad[0][field]=value
+            bad=deepcopy(SAMPLE);bad[0][field]=value
             with self.assertRaises(CapstoneError):inspect(CASES,bad)
 
     def test_extra_or_unknown_evidence_not_accepted(self):
         for values in (["password"],["policy","policy"]):
-            bad=deepcopy(self.responses);bad[0]["evidence"]=values
+            bad=deepcopy(SAMPLE);bad[0]["evidence"]=values
             with self.assertRaises(CapstoneError):inspect(CASES,bad)
 
     def test_duplicate_response_keys_and_bad_json_rejected(self):
@@ -56,7 +66,7 @@ class CapstoneChecks(unittest.TestCase):
                     load_json(path)
 
     def test_one_case_can_finish_before_later_responses_exist(self):
-        first = self.responses[:1]
+        first = SAMPLE[:1]
         report = inspect(CASES, first, case_id="C1")
         self.assertEqual(len(report["cases"]), 1)
         self.assertEqual(report["cases"][0]["id"], "C1")
@@ -66,3 +76,11 @@ class CapstoneChecks(unittest.TestCase):
             inspect(CASES, first, case_id="C2")
         with self.assertRaises(CapstoneError):
             inspect(CASES, first)
+
+    def test_learner_response_is_complete_only_after_all_six(self):
+        responses = load_json(ROOT / "response.json")
+        if responses == []:
+            self.fail("response.json is blank: complete cases one at a time with --case, then rerun this full check")
+        report = inspect(CASES, responses)
+        self.assertTrue(report["all_required_evidence_cited"])
+        self.assertEqual(report["mastery"], "UNVERIFIED")
