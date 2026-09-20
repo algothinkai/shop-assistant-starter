@@ -96,3 +96,8 @@ This is the **Stage 4 reference branch**. The deterministic workflow is complete
 for the documented local slice and passes the start's same checks. Attempt the
 separate codex/stage-4-start before comparing this reference. SDK hooks, live
 intent interpretation and the complete Module 4 course remain pending.
+
+The Stage 4 hooks extension has separate start/reference branches and an optional
+Agent SDK environment. See [the hook checkpoints](stages/04-agent-hooks.md).
+`scripts/verify-hooks` is separate from the passing baseline/workflow checks.
+No SDK/model call occurs unless the learner deliberately selects `--live`.
