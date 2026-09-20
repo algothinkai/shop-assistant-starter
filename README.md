@@ -121,3 +121,7 @@ model extraction, arithmetic reconciliation or calibrated automation.
 Stage 5 evaluation has a separate [start/reference exercise](stages/05-evaluation.md).
 Run scripts/verify-extraction-eval only when attempting that checkpoint. Its authored
 predictions teach metrics/calibration mechanics; they do not measure a live model.
+
+This is the **Stage 5 evaluation reference**. Its dedicated evaluation checks pass;
+attempt codex/stage-5-evaluation-start before comparing the implementation. Calibration
+and held-out data remain tiny authored examples, not evidence for deployment.
