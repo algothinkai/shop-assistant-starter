@@ -22,7 +22,9 @@ The provided assessor rejects compact-schema selection when explicit itemized
 charges are present, so choosing fewer fields cannot hide arithmetic conflicts.
 This conservative schema-mismatch case needs review, not automatic lookup.
 Unknown compact-source lines also require review: only the documented field lines,
-known fictional header/footer, Receipt ID and simple unpriced Item metadata are
+known fictional header/footer, Receipt ID and unpriced Item metadata naming one
+of the three fictional catalog products (Ceramic Pour-Over Set, Burr Grinder,
+Stainless Kettle) with a positive quantity are
 allowed. A new charge or malformed label cannot disappear because it was unmodeled.
 
 ## Practice

@@ -40,7 +40,7 @@ def assess(name, source, candidate):
                 continue  # The completed format validator checks these values/rows.
             if re.fullmatch(r"Receipt: R-[0-9]{4}", line):
                 continue
-            if re.fullmatch(r"Item: [^@]+ x[1-9][0-9]*", line) and not re.search(r"\b[A-Z]{3}\s+[0-9]", line):
+            if re.fullmatch(r"Item: (Ceramic Pour-Over Set|Burr Grinder|Stainless Kettle) x[1-9][0-9]{0,5}", line):
                 continue
             return "needs_human_review", ["unsupported_compact_source_line"]
     if name == "reconcile_receipt":
