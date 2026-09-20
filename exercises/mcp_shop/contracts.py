@@ -14,3 +14,17 @@ DEFINITIONS = {
 }
 PROFILES = {"orders": ("get_order", "find_orders"), "policies": ("get_policy",)}
 CATALOG_URI = "shop://policies/catalog"
+
+
+def valid_arguments(name, arguments):
+    """Fault injection must not mask schema or semantic validation errors."""
+    from datetime import date
+    from jsonschema import Draft202012Validator
+    if name not in DEFINITIONS or not Draft202012Validator(DEFINITIONS[name]["input_schema"]).is_valid(arguments):
+        return False
+    if name == "get_policy":
+        try:
+            date.fromisoformat(arguments["as_of"])
+        except ValueError:
+            return False
+    return True

@@ -11,7 +11,7 @@ from mcp.types import (Tool, ToolAnnotations, ListToolsResult, Resource, ListRes
                        ReadResourceResult, TextResourceContents)
 from shop_assistant.business import ShopService
 from .actions import handle_tool, failure
-from .contracts import DEFINITIONS, PROFILES, CATALOG_URI
+from .contracts import DEFINITIONS, PROFILES, CATALOG_URI, valid_arguments
 
 
 def build_server(shop, profile, *, denied=False, transient_once=False):
@@ -27,7 +27,8 @@ def build_server(shop, profile, *, denied=False, transient_once=False):
 
     async def call_tool(context, params):
         nonlocal remaining_fault
-        if remaining_fault and params.name in PROFILES[profile] and not denied:
+        if (remaining_fault and params.name in PROFILES[profile] and not denied
+                and valid_arguments(params.name, params.arguments or {})):
             remaining_fault = False
             return failure("SIMULATED_UNAVAILABLE", "transient", True,
                            "Injected local outage. Retry at most once in this exercise.")

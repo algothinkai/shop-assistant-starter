@@ -52,6 +52,22 @@ class ProtocolChecks(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(attempts), 1)
             self.assertEqual(response.structured_content["error"]["errorCategory"], "permission")
 
+    async def test_invalid_input_does_not_consume_or_retry_transient_fault(self):
+        for profile, name, invalid, valid in [
+            ("orders", "get_order", {"order_id": 7}, {"order_id": "O-1001"}),
+            ("policies", "get_policy", {"topic": "returns", "as_of": "2026-02-31"},
+             {"topic": "returns", "as_of": "2026-09-15"}),
+        ]:
+            async with connect(profile, "--transient-once") as client:
+                response, attempts = await call_with_retry(client, name, invalid)
+                self.assertTrue(response.is_error)
+                self.assertEqual(response.structured_content["error"]["errorCategory"], "validation")
+                self.assertEqual(len(attempts), 1)
+                response, attempts = await call_with_retry(client, name, valid)
+                self.assertEqual(len(attempts), 2)
+                self.assertEqual(attempts[0]["structuredContent"]["error"]["code"], "SIMULATED_UNAVAILABLE")
+                self.assertFalse(response.is_error)
+
     async def test_invalid_date_and_unknown_resource_fail_explicitly(self):
         from mcp import MCPError
         async with connect("policies") as client:
