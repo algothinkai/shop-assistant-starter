@@ -79,13 +79,22 @@ def save_snapshot(path, state, source_versions):
             os.unlink(temp)
 
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate snapshot key")
+        result[key] = value
+    return result
+
+
 def read_snapshot(path):
     try:
         with Path(path).open("rb") as stream:
             raw = stream.read(1_000_001)
         if len(raw) > 1_000_000:
             raise ValueError()
-        value = json.loads(raw)
+        value = json.loads(raw, object_pairs_hook=unique_object)
         if not isinstance(value, dict) or set(value) != {"case", "source_versions"}:
             raise ValueError()
         return {"case": validate(value["case"]), "source_versions": versions(value["source_versions"])}

@@ -107,3 +107,14 @@ class ContextChecks(unittest.TestCase):
             huge["issues"]={str(i):{"customer_expectation":observations,"status":observations} for i in range(20)}
             with self.assertRaises(ValueError):save_snapshot(path,huge,{"source":"v1"})
             self.assertEqual(read_snapshot(path)["case"]["case_id"],"old")
+
+    def test_duplicate_keys_cannot_hide_source_drift_or_facts(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/"case.json"
+            valid=json.dumps({"case":new_case("case-1"),"source_versions":{"policy":"current"}})
+            cases=[valid.replace('"policy": "current"','"policy": "old", "policy": "current"'),
+                   valid.replace('"issues": {}','"issues": {"return": {}}, "issues": {}')]
+            for raw in cases:
+                path.write_text(raw)
+                with self.assertRaises(ValueError):read_snapshot(path)
+                self.assertEqual(path.read_text(),raw)
