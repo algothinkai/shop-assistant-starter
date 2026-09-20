@@ -107,3 +107,8 @@ This is the **Stage 4 hooks reference branch**. The two callbacks are implemente
 All recorded runs are offline. An actual model-driven hook round trip remains
 UNVERIFIED until the explicit local live experiment observes both callbacks and a
 successful terminal result.
+
+Stage 5 adds a separate receipt-validator learning start/reference. See
+[the extraction checkpoint](stages/05-extraction.md). Run scripts/verify-extraction
+in the optional pinned environment. Authored candidates are fixtures, not model
+output; no live extraction quality or calibrated confidence is claimed.
