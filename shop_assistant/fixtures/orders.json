@@ -1,0 +1,5 @@
+[
+  {"id":"O-1001","customer_id":"C-1001","product_id":"P-POUR","placed_on":"2026-07-03","delivered_on":null,"status":"shipped","shipping":"In transit; fictional tracking event 2026-07-05","total_cents":4200,"receipt":"R-1001.txt"},
+  {"id":"O-1002","customer_id":"C-1002","product_id":"P-GRIND","placed_on":"2026-08-14","delivered_on":"2026-08-18","status":"delivered","shipping":"Delivered 2026-08-18","total_cents":12900,"receipt":"R-1002.txt"},
+  {"id":"O-1003","customer_id":"C-1003","product_id":"P-KETTLE","placed_on":"2026-08-28","delivered_on":"2026-09-01","status":"delivered","shipping":"Delivered 2026-09-01","total_cents":7600,"receipt":"R-1003.txt"}
+]
