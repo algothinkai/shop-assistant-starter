@@ -1,0 +1,70 @@
+[
+  {
+    "id": "POL-SHIP-2026-06",
+    "topic": "shipping",
+    "title": "POL-SHIP-2026-06",
+    "kind": "fictional_shop_policy",
+    "location": "shop_assistant/fixtures/policies.json#POL-SHIP-2026-06",
+    "published_on": null,
+    "observed_on": "2026-09-20",
+    "effective_on": "2026-06-01",
+    "supersedes": null,
+    "claims": {
+      "shipping_guidance": {
+        "value": "Use the order record for status. If tracking is absent or conflicting, ask for clarification or hand off; do not invent delivery dates.",
+        "quote": "Use the order record for status. If tracking is absent or conflicting, ask for clarification or hand off; do not invent delivery dates."
+      }
+    }
+  },
+  {
+    "id": "POL-RETURN-2026-06",
+    "topic": "returns",
+    "title": "POL-RETURN-2026-06",
+    "kind": "fictional_shop_policy",
+    "location": "shop_assistant/fixtures/policies.json#POL-RETURN-2026-06",
+    "published_on": null,
+    "observed_on": "2026-09-20",
+    "effective_on": "2026-06-01",
+    "supersedes": null,
+    "claims": {
+      "return_window_days": {
+        "value": 30,
+        "quote": "Training baseline: returns within 30 days of delivery require explicit simulated identity verification. Refunds write only the local teaching ledger."
+      }
+    }
+  },
+  {
+    "id": "POL-RETURN-2026-09",
+    "topic": "returns",
+    "title": "POL-RETURN-2026-09",
+    "kind": "fictional_shop_policy",
+    "location": "shop_assistant/fixtures/policies.json#POL-RETURN-2026-09",
+    "published_on": null,
+    "observed_on": "2026-09-20",
+    "effective_on": "2026-09-01",
+    "supersedes": "POL-RETURN-2026-06",
+    "claims": {
+      "return_window_days": {
+        "value": 45,
+        "quote": "Training policy: returns within 45 days of delivery require explicit simulated identity verification. Refunds write only the local teaching ledger. Escalate exceptions."
+      }
+    }
+  },
+  {
+    "id": "FAQ-RETURNS-2026-09",
+    "topic": "returns",
+    "title": "Fictional September customer FAQ",
+    "kind": "fictional_conflicting_faq",
+    "location": "exercises/research/sources.json#FAQ-RETURNS-2026-09",
+    "published_on": "2026-09-02",
+    "observed_on": "2026-09-20",
+    "effective_on": "2026-09-01",
+    "supersedes": null,
+    "claims": {
+      "return_window_days": {
+        "value": 30,
+        "quote": "Fictional research fixture: returns are available for 30 days after delivery. This FAQ conflicts with the September policy and requires review."
+      }
+    }
+  }
+]
