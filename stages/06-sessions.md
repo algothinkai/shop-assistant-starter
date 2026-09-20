@@ -44,7 +44,8 @@ Run scripts/verify-sessions then
 authored SDK objects test option wiring and terminal checks, not memory or real
 transcripts. Predict each ID relationship and explain why the last prompt omits
 the amount: it tests the original conversation after the alternative branch.
-The probe checks both ID relationships and exact fictional facts, stopping on the
+The probe rejects duplicate JSON keys and non-integer cents; it checks both ID
+relationships and exact fictional facts, stopping on the
 first failed observation. The fixture ignores the model and cannot prove SDK memory.
 
 Optional --live actually calls Agent SDK query using local authentication and

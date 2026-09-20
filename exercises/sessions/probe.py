@@ -1,6 +1,7 @@
 """Bounded four-call experiment. Query is injected for explicit offline tests."""
 import json
 from .adapter import build_options, consume
+from exercises.context.state import unique_object
 
 BASE = {"case_code": "training-cobalt", "amount_cents": 7600}
 ALTERNATIVE = {"case_code": "training-cobalt", "amount_cents": 7500}
@@ -22,12 +23,14 @@ async def probe(query, cwd, model):
         sid=result["session_id"]
         relation=(sid is not None and (action=="fresh" or (sid != parent if action=="fork" else sid==parent)))
         try:
-            observed=json.loads(result["text"]) if isinstance(result.get("text"),str) else None
+            observed=json.loads(result["text"], object_pairs_hook=unique_object) if isinstance(result.get("text"),str) else None
         except ValueError:
             observed=None
-        verified=result["status"]=="success" and relation and observed==expected
+        facts_match=(isinstance(observed,dict) and observed==expected
+                     and type(observed.get("amount_cents")) is int)
+        verified=result["status"]=="success" and relation and facts_match
         trace.append({"action":action,"terminal":result["status"],"session_id":sid,
-                      "id_relation_correct":relation,"facts_match":observed==expected})
+                      "id_relation_correct":relation,"facts_match":facts_match})
         if not verified:
             return {"status":"unverified","trace":trace}
         if action=="fresh":parent=sid

@@ -103,3 +103,16 @@ class SessionChecks(unittest.IsolatedAsyncioTestCase):
             outcome=await probe(failing,d,"offline-model")
             self.assertEqual(len(calls),1)
             self.assertEqual(outcome["status"],"unverified")
+
+    async def test_ambiguous_or_noninteger_facts_stop_probe(self):
+        for text in ['{"case_code":"wrong","case_code":"training-cobalt","amount_cents":1,"amount_cents":7600}',
+                     '{"case_code":"training-cobalt","amount_cents":7600.0}']:
+            calls=[]
+            async def ambiguous(**kwargs):
+                calls.append(kwargs)
+                yield result(text=text)
+            with tempfile.TemporaryDirectory() as d:
+                outcome=await probe(ambiguous,d,"offline-model")
+                self.assertEqual(len(calls),1)
+                self.assertFalse(outcome["trace"][0]["facts_match"])
+                self.assertEqual(outcome["status"],"unverified")
