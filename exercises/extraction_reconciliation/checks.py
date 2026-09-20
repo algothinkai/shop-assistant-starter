@@ -106,3 +106,13 @@ class ReconciliationChecks(unittest.TestCase):
         self.assertEqual(report["record"]["category"], "unclear")
         self.assertIn("category_unresolved", report["issues"])
         self.assertIsNone(reconcile(SOURCE + "Receipt: R-4002\n")["record"]["calculated_total_cents"])
+
+    def test_subtotal_conflict_survives_missing_shipping(self):
+        source = SOURCE.replace("Subtotal: USD 47.50", "Subtotal: USD 48.50").replace("Shipping: USD 5.00\n", "")
+        report = reconcile(source)
+        self.assertEqual(report["item_subtotal_cents"], 4750)
+        self.assertIsNone(report["record"]["calculated_total_cents"])
+        self.assertTrue(report["record"]["conflict_detected"])
+        self.assertIn("subtotal_mismatch", report["issues"])
+        self.assertIn("missing_or_repeated_shipping", report["issues"])
+        self.assertEqual(report["status"], "needs_human_review")

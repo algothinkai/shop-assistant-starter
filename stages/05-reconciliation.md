@@ -26,6 +26,8 @@ Implement exact integer-cent calculations, preserving every original source line
 in observations. Reject malformed amounts/quantities and unknown lines. Repeated
 amount fields require review even if identical; differing repetitions flag conflict.
 Do not use stated Subtotal as the calculation base: recompute from item lines.
+An available item subtotal must be compared independently, even if a missing
+charge prevents computing the final total; keep both issues visible.
 A missing/invalid/duplicated charge makes the calculated total null, while a unique
 valid stated Total remains visible. Conversely, a missing/repeated stated Total
 does not erase an independently calculable total; its difference stays null and
