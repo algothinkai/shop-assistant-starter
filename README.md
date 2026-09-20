@@ -138,3 +138,8 @@ never calls a model. Attempt the separate messages start before reading this ans
 Stage 5 adds [two-layout/few-shot practice](stages/05-formats.md) on a separate
 start/reference. Authored examples and offline transfer checks are not measured
 model improvement; default demo remains OFFLINE_ONLY.
+
+This is the **Stage 5 formats reference**. Three authored examples and the separate
+transfer case exercise labeled/inline evidence checks. Compare with the separate
+formats start after attempting the checkpoint. Live few-shot effectiveness remains
+UNVERIFIED; deterministic tests establish validation behavior only.
