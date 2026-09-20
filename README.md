@@ -54,7 +54,7 @@ shell, never on the algothink website or in screenshots.
 - `shop_assistant/web.py`: local HTML workbench. It is a viewer and demo trigger,
   not a hosted agent or commerce backend.
 - `stages/README.md`: stage goals, allowed edits, acceptance and recovery.
-  This branch adds the separate Stage 1 exercise. Stages 4–10 say NOT_READY;
+  This branch adds the separate Stage 1 exercise. Stages 5–10 say NOT_READY;
   the fresh-install baseline test suite remains green.
 
 Identity verification is a **simulated Boolean in local teaching state**, never
@@ -87,3 +87,7 @@ This is the **Stage 3 reference branch**. Attempt `codex/stage-3-start` first.
 The scoped dispatcher is implemented here; `scripts/verify-stage 3` uses the same
 checks as the start. Local protocol success does not validate a Claude model or
 host connection, and does not approve the draft curriculum for publication.
+
+Stage 4 learning start builds on the completed Stage 3 reference. Read [Stage 4](stages/04-after-sales.md) for the deterministic workflow exercise.
+Only `scripts/verify-stage 4` intentionally fails before implementation; foundation
+checks stay passing. Agent SDK hooks are not yet implemented or verified.

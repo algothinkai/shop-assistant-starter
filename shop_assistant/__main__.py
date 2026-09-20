@@ -14,6 +14,9 @@ from .web import serve
 
 
 def verify_stage(number: int) -> int:
+    if number == 4:
+        print("Stage 4 deterministic exercise checks; not Agent SDK hook or model evidence.", flush=True)
+        return subprocess.call([sys.executable, "-m", "unittest", "exercises.after_sales.checks", "-v"])
     if number == 3:
         python = Path(__file__).resolve().parent.parent / ".venv/bin/python"
         if not python.exists():
