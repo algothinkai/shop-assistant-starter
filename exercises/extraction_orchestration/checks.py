@@ -108,3 +108,13 @@ class OrchestrationChecks(unittest.TestCase):
             with self.assertRaises(ValueError):
                 run(SOURCE, "test", send, **kwargs)
             send.assert_not_called()
+
+    def test_compact_schema_cannot_skip_arithmetic_source_conflict(self):
+        source = SCENARIOS["mismatch"] + "Order: O-1003\nDate: 2026-08-28\nCustomer: Noor Patel\n"
+        candidate = deepcopy(CANDIDATE)
+        candidate["total_cents"] = {"value": 5530, "evidence": "Total: USD 55.30"}
+        candidate["currency"]["evidence"] = "Total: USD 55.30"
+        enrich = Mock(return_value={"id": "O-1003"})
+        r = run(source, "test", Mock(return_value=response(candidate=candidate)), mode="authored_fixture_no_model", enrich=enrich)
+        self.assertEqual(r["status"], "needs_human_review")
+        enrich.assert_not_called()

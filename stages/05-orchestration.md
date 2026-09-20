@@ -18,6 +18,9 @@ No order or refund tool is exposed during extraction. After a valid compact rece
 a program may call the existing read-only get_order to enrich it. The arithmetic
 record has no order ID; do not guess one from its receipt ID. Any requires an offered
 tool, not necessarily the correct schema; validation still gates the next step.
+The provided assessor rejects compact-schema selection when explicit itemized
+charges are present, so choosing fewer fields cannot hide arithmetic conflicts.
+This conservative schema-mismatch case needs review, not automatic lookup.
 
 ## Practice
 

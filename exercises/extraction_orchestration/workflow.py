@@ -23,6 +23,12 @@ def parse(response, allowed):
 
 
 def assess(name, source, candidate):
+    # A compact schema cannot omit arithmetic facts already present in the source.
+    itemized = any(line.strip().casefold().startswith(("subtotal:", "tax:", "shipping:", "discount:"))
+                   or (line.strip().casefold().startswith("item:") and "@" in line)
+                   for line in source.splitlines())
+    if name == "extract_receipt" and itemized:
+        return "needs_human_review", ["schema_does_not_cover_arithmetic_source"]
     if name == "reconcile_receipt":
         result = validate_candidate(source, candidate)
         return result["status"], result["candidate_errors"]
