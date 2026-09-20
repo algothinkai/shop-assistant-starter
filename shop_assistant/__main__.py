@@ -14,6 +14,13 @@ from .web import serve
 
 
 def verify_stage(number: int) -> int:
+    if number == 3:
+        python = Path(__file__).resolve().parent.parent / ".venv/bin/python"
+        if not python.exists():
+            print("Stage 3 needs its optional MCP environment. Run scripts/setup-mcp first.")
+            return 2
+        print("Stage 3 real local MCP subprocess checks; not model or Claude Code evidence.", flush=True)
+        return subprocess.call([str(python), "-m", "unittest", "exercises.mcp_shop.checks", "-v"])
     if number == 2:
         print("Stage 2 offline protocol checks; start failures are intentional. "
               "These are not live integration evidence.", flush=True)

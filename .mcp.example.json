@@ -1,0 +1,6 @@
+{
+  "mcpServers": {
+    "shop-orders": {"type": "stdio", "command": "${SHOP_PYTHON}", "args": ["-m", "exercises.mcp_shop.server", "--profile", "orders"], "env": {"PYTHONPATH": "${SHOP_ROOT}"}},
+    "shop-policies": {"type": "stdio", "command": "${SHOP_PYTHON}", "args": ["-m", "exercises.mcp_shop.server", "--profile", "policies"], "env": {"PYTHONPATH": "${SHOP_ROOT}"}}
+  }
+}
