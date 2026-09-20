@@ -1,8 +1,8 @@
 # Checkpoints and recoverable stages
 
 The Stage 0 baseline stays on its own branch. This branch adds the Stage 1 draft
-exercise; its explicit checks intentionally fail before repair. Stages 6–10 remain
-NOT_READY. The course binds stage starts and references to exact commits.
+exercise; its explicit checks intentionally fail before repair. Other stage labs have separate versioned refs; this branch adds an explicit
+Stage 10 capstone start. The course binds stage starts and references to exact commits.
 
 For every stage: read the current case, **choose and justify** a method,
 predict evidence, practice within scope, inspect real events/tests, and retry
@@ -54,3 +54,9 @@ intentional. Full model extraction/evaluation coverage remains pending.
 Stage6 local case-context start/reference now have scripts/verify-context. Read
 [case facts and recovery](06-context.md). Actual SDK session and code-exploration
 labs remain pending; this local snapshot does not prove live agent resumption.
+
+Stage 10 has a separate capstone start/reference with six authored fictional
+combined-fault cases. Read [Stage 10](10-capstone.md). The start keeps a blank
+response and unfinished structural verifier; baseline tests stay green. The
+reference contains author-draft decisions, but local structure alone never proves
+independent reasoning, live tool use or mastery.
