@@ -208,3 +208,54 @@ class BatchChecks(unittest.TestCase):
         result["outcomes"]["receipt-1003"]["candidate"]["total_cents"]["value"] = 99
         self.assertEqual(self.manifest, before)
         self.assertEqual(self.records, records)
+
+    def test_duplicate_source_copies_do_not_fill_two_document_sample(self):
+        docs = [
+            DOCUMENTS[0],
+            {"id": "copied-receipt", "source": DOCUMENTS[0]["source"]},
+            DOCUMENTS[1],
+        ]
+        payload = bind(docs, MODEL, NOTE)
+        sample = bind(docs[:2], MODEL, NOTE)["manifest"]
+        copied = {**succeeded("receipt-1003"), "custom_id": "copied-receipt"}
+        with self.assertRaises(BatchFailure):
+            scale_up(
+                payload,
+                sample,
+                lines([self.records[0], copied]),
+                evidence_mode="authored_fixture",
+            )
+
+    def test_chunk_ids_cannot_replace_existing_success_or_retry(self):
+        from .contracts import digest
+
+        collision = "chunk_" + digest("receipt-1003")[:12] + "_1"
+        docs = [
+            DOCUMENTS[0],
+            {"id": collision, "source": DOCUMENTS[1]["source"]},
+            {"id": collision + "_r1", "source": DOCUMENTS[2]["source"]},
+        ]
+        payload = bind(docs, MODEL, NOTE)
+        records = [
+            failure("receipt-1003", error_type="invalid_request_error"),
+            {**succeeded("receipt-1001"), "custom_id": collision},
+            failure(collision + "_r1", "expired"),
+        ]
+        source = DOCUMENTS[0]["source"]
+        split = source.index("Total:")
+        result = retry_plan(
+            payload["manifest"],
+            lines(records),
+            chunks={"receipt-1003": [source[:split], source[split:]]},
+        )
+        ids = [r["custom_id"] for r in result["payload"]["body"]["requests"]]
+        self.assertNotIn(collision, ids)
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertIn(collision + "_r1", ids)
+        chunks = [
+            cid
+            for cid, x in result["lineage"].items()
+            if x["parent_id"] == "receipt-1003"
+        ]
+        self.assertTrue(set(chunks).isdisjoint(d["id"] for d in docs))
+        self.assertEqual(result["retained_validated_ids"], [collision])

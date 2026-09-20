@@ -25,13 +25,13 @@ scripts/verify-batch checks remain intentionally unfinished at the start.
    reject duplicate/unknown IDs and ambiguous JSON, preserve missing records. A
    provider succeeded response still needs extraction terminal and source checks.
 3. Implement scale_up: compare the exact model, prompt note, source documents and
-   bound payload; two sample documents must validate before preparing remaining
+   bound payload; two distinct source documents must validate before preparing remaining
    work. Do not resubmit already validated sample IDs. Source validation on this
    small labeled corpus is not representative model-quality measurement.
 4. Implement retry_plan: retain successes; retry transient/expired items, hold
    cancellation, bad requests and invalid extraction for review. For a confirmed
    context-size problem, caller-supplied chunks must partition the entire failed
-   source exactly, retain parent lineage and require new sample/merge review.
+   source exactly, retain parent lineage, avoid all original/planned IDs, and require new sample/merge review.
    Do not assume every invalid_request_error means context length. Chunking a
    receipt may separate required fields, so no automatic merged success is claimed.
 
