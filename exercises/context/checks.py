@@ -98,3 +98,12 @@ class ContextChecks(unittest.TestCase):
         history=[{"role":"user","content":"x"*200001}]
         with self.assertRaises(ValueError):build_context(fact(),history,"Summary")
         self.assertEqual(len(history[0]["content"]),200001)
+
+    def test_oversized_snapshot_cannot_replace_prior_readable_state(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/"case.json";save_snapshot(path,new_case("old"),{"source":"v1"})
+            huge=new_case("huge")
+            observations=[{"value":"中"*500,"source":"source-"+str(i),"observed_at":STAMP} for i in range(20)]
+            huge["issues"]={str(i):{"customer_expectation":observations,"status":observations} for i in range(20)}
+            with self.assertRaises(ValueError):save_snapshot(path,huge,{"source":"v1"})
+            self.assertEqual(read_snapshot(path)["case"]["case_id"],"old")

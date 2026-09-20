@@ -62,12 +62,15 @@ def versions(value):
 def save_snapshot(path, state, source_versions):
     """Atomic replacement for one local writer; not concurrent transaction storage."""
     data = {"case": validate(state), "source_versions": versions(source_versions)}
+    serialized = json.dumps(data, ensure_ascii=False).encode("utf-8")
+    if len(serialized) > 1_000_000:
+        raise ValueError("Case snapshot exceeds the read/write size bound")
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temp = tempfile.mkstemp(prefix="case-", suffix=".json", dir=path.parent)
     try:
-        with os.fdopen(fd, "w") as stream:
-            json.dump(data, stream, ensure_ascii=False)
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(serialized)
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temp, path)
