@@ -54,7 +54,7 @@ shell, never on the algothink website or in screenshots.
 - `shop_assistant/web.py`: local HTML workbench. It is a viewer and demo trigger,
   not a hosted agent or commerce backend.
 - `stages/README.md`: stage goals, allowed edits, acceptance and recovery.
-  This branch adds the separate Stage 1 exercise. Stages 3–10 say NOT_READY;
+  This branch adds the separate Stage 1 exercise. Stages 4–10 say NOT_READY;
   the fresh-install baseline test suite remains green.
 
 Identity verification is a **simulated Boolean in local teaching state**, never
@@ -77,3 +77,8 @@ reference, intentional exercise failures, scope and recovery.
 This Stage 2 branch builds on the completed Stage 1 reference. See
 [Stage 2](stages/02-tool-loop.md) for explicit offline/live commands and recovery.
 The default workbench remains a fixed preset, not the Messages API experiment.
+
+Stage 3 adds an optional pinned MCP environment and two real local stdio servers.
+Read [the MCP checkpoints](stages/03-mcp.md) before running `scripts/setup-mcp` and
+`scripts/verify-stage 3`. The start dispatcher intentionally returns NOT_READY;
+the baseline remains green. Live Claude Code/model behavior is separately unverified.
