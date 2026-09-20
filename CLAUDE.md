@@ -8,5 +8,6 @@ and point to `scripts/test` or `scripts/verify-stage N` for inspection. Do not
 complete future stages, reveal their reference solutions, or claim that Codex
 or preset fixtures verify Claude Code behavior. Never read or print `.env`.
 
-Stage 1 will add scoped rules and skills experiments in a separate version.
+This Stage 1 branch adds scoped rules and one read-only exploration skill; see
+`stages/01-collaboration.md`. They are not live-verified by Python checks.
 This baseline has no Claude Code hooks, MCP configuration, or live model call.

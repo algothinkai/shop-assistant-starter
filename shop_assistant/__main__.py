@@ -14,6 +14,10 @@ from .web import serve
 
 
 def verify_stage(number: int) -> int:
+    if number == 1:
+        print("Stage 1 exercise checks: failure is expected before the bounded repair. "
+              "See stages/01-collaboration.md; baseline tests remain separate.", flush=True)
+        return subprocess.call([sys.executable, "-m", "unittest", "exercises.collaboration.checks", "-v"])
     if number != 0:
         print(
             f"Stage {number}: NOT_READY in this starter version. "
