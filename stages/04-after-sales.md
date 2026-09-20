@@ -85,7 +85,7 @@ actual business calls in temporary teaching state and prints their events/ledger
 Its exit code only means the demo ran: inspect outcome.status for blocked or
 needs_human_review. The verified scenario explicitly sets simulated identity as
 fixture setup, never a customer-controlled request. On the learning start the
-unimplemented workflow raises NOT_READY; try demos after your implementation.
+unimplemented workflow raises NotImplementedError with a Stage 4 instruction; try demos after your implementation.
 
 A routine inquiry needs no refund amount. A persisted handoff includes the
 requested date/reason and already-observed order/policy facts. On an immediate
