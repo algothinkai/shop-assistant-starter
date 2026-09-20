@@ -134,3 +134,7 @@ This is the **Stage 5 Messages reference**. Request construction and terminal
 candidate parsing pass the same offline checks as the learning start. Actual API
 compatibility and live receipt extraction remain UNVERIFIED; the default demo
 never calls a model. Attempt the separate messages start before reading this answer.
+
+Stage 5 adds [two-layout/few-shot practice](stages/05-formats.md) on a separate
+start/reference. Authored examples and offline transfer checks are not measured
+model improvement; default demo remains OFFLINE_ONLY.

@@ -1,0 +1,80 @@
+[
+  {
+    "source": "Order: O-3001\nDate: 2026-09-02\nCustomer: Mina Reed\nTotal: USD 12.50",
+    "candidate": {
+      "order_id": {
+        "value": "O-3001",
+        "evidence": "Order: O-3001"
+      },
+      "purchase_date": {
+        "value": "2026-09-02",
+        "evidence": "Date: 2026-09-02"
+      },
+      "currency": {
+        "value": "USD",
+        "evidence": "Total: USD 12.50"
+      },
+      "total_cents": {
+        "value": 1250,
+        "evidence": "Total: USD 12.50"
+      },
+      "customer_name": {
+        "value": "Mina Reed",
+        "evidence": "Customer: Mina Reed"
+      }
+    },
+    "reason": "Convert USD 12.50 to 1250 integer cents, preserving the full Total line. Copying 12 loses units."
+  },
+  {
+    "source": "Receipt | order=O-3002 | purchased=2026-09-02 | customer=Ivo Lake | total=USD 34.99",
+    "candidate": {
+      "order_id": {
+        "value": "O-3002",
+        "evidence": "Receipt | order=O-3002 | purchased=2026-09-02 | customer=Ivo Lake | total=USD 34.99"
+      },
+      "purchase_date": {
+        "value": "2026-09-02",
+        "evidence": "Receipt | order=O-3002 | purchased=2026-09-02 | customer=Ivo Lake | total=USD 34.99"
+      },
+      "currency": {
+        "value": "USD",
+        "evidence": "Receipt | order=O-3002 | purchased=2026-09-02 | customer=Ivo Lake | total=USD 34.99"
+      },
+      "total_cents": {
+        "value": 3499,
+        "evidence": "Receipt | order=O-3002 | purchased=2026-09-02 | customer=Ivo Lake | total=USD 34.99"
+      },
+      "customer_name": {
+        "value": "Ivo Lake",
+        "evidence": "Receipt | order=O-3002 | purchased=2026-09-02 | customer=Ivo Lake | total=USD 34.99"
+      }
+    },
+    "reason": "An inline field is present even without a separate labeled line. Quote the whole original row, not a synthesized line or a name from another example."
+  },
+  {
+    "source": "Order: O-3003\nDate: 2026-09-02\nTotal: USD 8.00",
+    "candidate": {
+      "order_id": {
+        "value": "O-3003",
+        "evidence": "Order: O-3003"
+      },
+      "purchase_date": {
+        "value": "2026-09-02",
+        "evidence": "Date: 2026-09-02"
+      },
+      "currency": {
+        "value": "USD",
+        "evidence": "Total: USD 8.00"
+      },
+      "total_cents": {
+        "value": 800,
+        "evidence": "Total: USD 8.00"
+      },
+      "customer_name": {
+        "value": null,
+        "evidence": null
+      }
+    },
+    "reason": "No customer field exists. Keep customer value and evidence null instead of borrowing another receipt\u2019s name."
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "source": "Receipt | order=O-3099 | purchased=2026-09-02 | customer=Tess Lane | total=USD 57.25",
+  "candidate": {
+    "order_id": {
+      "value": "O-3099",
+      "evidence": "Receipt | order=O-3099 | purchased=2026-09-02 | customer=Tess Lane | total=USD 57.25"
+    },
+    "purchase_date": {
+      "value": "2026-09-02",
+      "evidence": "Receipt | order=O-3099 | purchased=2026-09-02 | customer=Tess Lane | total=USD 57.25"
+    },
+    "currency": {
+      "value": "USD",
+      "evidence": "Receipt | order=O-3099 | purchased=2026-09-02 | customer=Tess Lane | total=USD 57.25"
+    },
+    "total_cents": {
+      "value": 5725,
+      "evidence": "Receipt | order=O-3099 | purchased=2026-09-02 | customer=Tess Lane | total=USD 57.25"
+    },
+    "customer_name": {
+      "value": "Tess Lane",
+      "evidence": "Receipt | order=O-3099 | purchased=2026-09-02 | customer=Tess Lane | total=USD 57.25"
+    }
+  }
+}
