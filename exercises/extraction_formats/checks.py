@@ -71,6 +71,7 @@ class FormatChecks(unittest.TestCase):
         self.assertEqual(payload["system"].count("<example>"), 3)
         self.assertNotIn("Tess Lane", payload["system"])
         self.assertTrue(payload["tools"][0]["strict"])
+        self.assertIn("inline row", payload["tools"][0]["description"])
 
     def test_current_receipt_correction_retains_source_not_examples(self):
         case = transfer();bad = deepcopy(case["candidate"]);bad["total_cents"]["value"] = 57
