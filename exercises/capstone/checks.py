@@ -54,3 +54,15 @@ class CapstoneChecks(unittest.TestCase):
                 path.write_text(payload)
                 with self.assertRaises(CapstoneError):
                     load_json(path)
+
+    def test_one_case_can_finish_before_later_responses_exist(self):
+        first = self.responses[:1]
+        report = inspect(CASES, first, case_id="C1")
+        self.assertEqual(len(report["cases"]), 1)
+        self.assertEqual(report["cases"][0]["id"], "C1")
+        self.assertTrue(report["all_required_evidence_cited"])
+        self.assertEqual(report["mastery"], "UNVERIFIED")
+        with self.assertRaises(CapstoneError):
+            inspect(CASES, first, case_id="C2")
+        with self.assertRaises(CapstoneError):
+            inspect(CASES, first)
