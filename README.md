@@ -156,3 +156,9 @@ Reconciled means this fictional arithmetic contract matched, never refund approv
 Stage 5 [schema-selection orchestration](stages/05-orchestration.md) joins source
 validation to read-only enrichment. Default model responses remain authored; actual
 local get_order events are distinguished from unverified live model behavior.
+
+This is the **Stage 5 orchestration reference**. Both schema paths reuse source
+validation, bounded correction and explicit failure states. Compact order enrichment
+runs only after its full supported-source check; arithmetic results do not invent
+an order ID. The default demo records real local read events but authored model
+responses. Actual model compatibility remains UNVERIFIED.
