@@ -112,3 +112,8 @@ Stage 5 adds a separate receipt-validator learning start/reference. See
 [the extraction checkpoint](stages/05-extraction.md). Run scripts/verify-extraction
 in the optional pinned environment. Authored candidates are fixtures, not model
 output; no live extraction quality or calibrated confidence is claimed.
+
+This is the **Stage 5 reference branch**. The narrow receipt validator is
+implemented and passes the same checks as the learning start. Complete source
+lines, unresolved source values and bounded correction are checked; this is not
+model extraction, arithmetic reconciliation or calibrated automation.
